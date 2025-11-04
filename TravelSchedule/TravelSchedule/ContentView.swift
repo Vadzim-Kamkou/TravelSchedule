@@ -16,6 +16,11 @@ struct ContentView: View {
             Text("Hello, world!")
         }
         .padding()
+        .onAppear {
+            // Вызываем нашу тестовую функцию при появлении View
+            
+            testFetchStations()
+        }
     }
 }
 
