@@ -12,6 +12,7 @@ struct TravelScheduleApp: App {
     var body: some Scene {
         WindowGroup {
             SplashScreen()
+            //MainView()
         }
     }
 }

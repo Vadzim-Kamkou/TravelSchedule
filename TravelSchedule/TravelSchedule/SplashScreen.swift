@@ -5,7 +5,7 @@ struct SplashScreen: View {
     
     var body: some View {
         if isActive {
-            ContentView()
+            MainView()
         } else {
             GeometryReader { geometry in
                 Image("splash_screen")

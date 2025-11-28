@@ -1,9 +1,6 @@
 import OpenAPIRuntime
 import OpenAPIURLSession
 
-
-typealias NearestStations = Components.Schemas.Stations
-
 protocol NearestStationsServiceProtocol {
   func getNearestStations(lat: Double, lng: Double, distance: Int
   ) async throws -> NearestStations
@@ -41,7 +38,7 @@ func testFetchStations() {
             
             let service = NearestStationsService(
                 client: client,
-                apikey: "ceea6351-f390-4784-8f66-7f6409f22768"
+                apikey: APIConfiguration.apiKey
             )
             
             print("> TEST functestFetchStations")

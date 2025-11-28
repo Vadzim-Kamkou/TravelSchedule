@@ -2,8 +2,6 @@ import Foundation
 import OpenAPIRuntime
 import OpenAPIURLSession
 
-typealias CarrierInfo = Components.Schemas.CarrierResponse
-
 protocol CarrierInfoServiceProtocol {
   func getCarrierInfo(
     code: String,
@@ -47,7 +45,7 @@ func testFetchCarrierInfo() {
             
             let service = CarrierInfoService(
                 client: client,
-                apikey: "ceea6351-f390-4784-8f66-7f6409f22768"
+                apikey: APIConfiguration.apiKey
             )
             
             print("> TEST testFetchCarrierInfo")
@@ -55,7 +53,7 @@ func testFetchCarrierInfo() {
             
             let scheduleService = ScheduleBetweenStationsService(
                 client: client,
-                apikey: "ceea6351-f390-4784-8f66-7f6409f22768"
+                apikey: APIConfiguration.apiKey
             )
             
             let schedule = try await scheduleService.getScheduleBetweenStations(

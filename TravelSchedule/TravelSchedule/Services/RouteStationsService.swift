@@ -1,8 +1,6 @@
 import OpenAPIRuntime
 import OpenAPIURLSession
 
-typealias RouteStations = Components.Schemas.ThreadStationsResponse
-
 protocol RouteStationsServiceProtocol {
   func getRouteStations(
     uid: String,
@@ -58,7 +56,7 @@ func testFetchRouteStations() {
             
             let scheduleService = ScheduleBetweenStationsService(
                 client: client,
-                apikey: "ceea6351-f390-4784-8f66-7f6409f22768"
+                apikey: APIConfiguration.apiKey
             )
             
             let schedule = try await scheduleService.getScheduleBetweenStations(
