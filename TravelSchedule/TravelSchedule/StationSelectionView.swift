@@ -37,7 +37,7 @@ struct StationSelectionView: View {
                 
                 VStack {
                     Spacer()
-                    Text("Станция не найдена")
+                    Text("station_not_found")
                         .font(.system(size: 24))
                         .fontWeight(.bold)
                         .foregroundColor(.appBlack)
@@ -69,12 +69,7 @@ struct StationSelectionView: View {
     }
     
     private var navigationTitle: String {
-        switch mode {
-        case .departure:
-            return "Выбор станции"
-        case .arrival:
-            return "Выбор станции"
-        }
+        return String(localized: "station_selection_title")
     }
 }
 

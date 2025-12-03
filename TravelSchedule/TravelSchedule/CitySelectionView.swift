@@ -8,8 +8,8 @@ enum SelectionMode {
     
     var title: String {
         switch self {
-        case .departure: return "Выбор города"
-        case .arrival: return "Выбор города"
+        case .departure: return String(localized: "city_selection_title")
+        case .arrival: return String(localized: "city_selection_title")
         }
     }
 }
@@ -70,24 +70,24 @@ struct CitySelectionView: View {
                 VStack(spacing: 16) {
                     ProgressView()
                         .scaleEffect(1.5)
-                    Text("Загрузка станций...")
+                    Text("loading_stations")
                         .font(.system(size: 17))
                         .foregroundColor(.gray)
                 }
             } else if let error = errorMessage {
-  
+                
                 VStack(spacing: 16) {
                     Image(systemName: "exclamationmark.triangle")
                         .font(.system(size: 50))
                         .foregroundColor(.red)
-                    Text("Ошибка загрузки")
+                    Text("loading_error")
                         .font(.headline)
                     Text(error)
                         .font(.subheadline)
                         .foregroundColor(.gray)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
-                    Button("Попробовать снова") {
+                    Button("try_again") {
                         loadAllStations()
                     }
                     .buttonStyle(.borderedProminent)
@@ -102,7 +102,7 @@ struct CitySelectionView: View {
                     if displayedSettlements.isEmpty {
                         VStack {
                             Spacer()
-                            Text("Город не найден")
+                            Text("city_not_found")
                                 .font(.system(size: 24))
                                 .fontWeight(.bold)
                                 .foregroundColor(.appBlack)
@@ -143,7 +143,7 @@ struct CitySelectionView: View {
             }
         }
     }
-
+    
     private func loadAllStations() {
         isLoading = true
         errorMessage = nil
@@ -177,20 +177,20 @@ struct CitySelectionView: View {
             }
         }
     }
-    // Подготовка плоского списка всех settlements
+
     private func prepareSettlements() {
-        guard let allStations = allStationsData else { return }  // ← Правильно
+        guard let allStations = allStationsData else { return }
         
         var result: [Settlement] = []
         
-        allStations.countries?.forEach { country in  // ← Правильно
+        allStations.countries?.forEach { country in
             country.regions?.forEach { region in
                 if let settlements = region.settlements {
                     result.append(contentsOf: settlements)
                 }
             }
         }
-    
+        
         allSettlements = result
     }
 }
@@ -206,7 +206,7 @@ struct SearchBar: View {
                 .foregroundColor(.gray)
                 .font(.system(size: 17))
             
-            TextField("Введите запрос", text: $text)
+            TextField("search_placeholder", text: $text)
                 .focused($isFocused)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.never)

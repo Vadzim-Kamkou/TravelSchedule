@@ -24,9 +24,9 @@ struct RouteSelectionPanel: View {
                    VStack(spacing: 0) {
 
                        RouteFieldView(
-                           placeholder: "Откуда",
-                           selectedSettlement: departureSettlement,
-                           selectedStation: departureStation
+                            placeholder: String(localized: "from_placeholder"),
+                            selectedSettlement: departureSettlement,
+                            selectedStation: departureStation
                        )
                        .contentShape(Rectangle())
                        .onTapGesture {
@@ -35,9 +35,9 @@ struct RouteSelectionPanel: View {
                        
   
                        RouteFieldView(
-                           placeholder: "Куда",
-                           selectedSettlement: arrivalSettlement,
-                           selectedStation: arrivalStation
+                            placeholder: String(localized: "to_placeholder"),
+                            selectedSettlement: arrivalSettlement,
+                            selectedStation: arrivalStation
                        )
                        .contentShape(Rectangle())
                        .onTapGesture {
@@ -68,7 +68,7 @@ struct RouteSelectionPanel: View {
                    Button {
                        onSearchTap()
                    } label: {
-                       Text("Найти")
+                       Text("search_button")
                            .font(.system(size: 17, weight: .semibold))
                            .foregroundColor(.white)
                            .frame(width: 150, height: 60)

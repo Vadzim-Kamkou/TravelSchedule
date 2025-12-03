@@ -24,7 +24,7 @@ struct MainView: View {
     
     
     
-    // MARK: - State для выбора маршрута
+    // MARK: - State Route
     @State private var departureSettlement: Settlement? = nil
     @State private var departureStation: Station? = nil
     @State private var arrivalSettlement: Settlement? = nil
@@ -36,6 +36,8 @@ struct MainView: View {
     // MARK: - Navigation State
     @State private var showDepartureSelection = false
     @State private var showArrivalSelection = false
+    @State private var showScheduleList = false
+    
     
     var body: some View {
         NavigationStack {
@@ -67,7 +69,7 @@ struct MainView: View {
                                 showArrivalSelection = true
                             },
                             onSearchTap: {
-                                print("Ищем рейсы...")
+                                showScheduleList = true
                             }
                         )
                         .padding(.top, 16)
@@ -126,6 +128,19 @@ struct MainView: View {
                     }
                 )
             }
+            .navigationDestination(isPresented: $showScheduleList) {
+                if let depSettlement = departureSettlement,
+                   let depStation = departureStation,
+                   let arrSettlement = arrivalSettlement,
+                   let arrStation = arrivalStation {
+                    ScheduleListView(
+                        departureSettlement: depSettlement,
+                        departureStation: depStation,
+                        arrivalSettlement: arrSettlement,
+                        arrivalStation: arrStation
+                    )
+                }
+            }
         }
         .tint(.appBlack)
         .onAppear {
@@ -173,7 +188,7 @@ struct StoryCardView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 16))
             
             VStack(alignment: .leading, spacing: 0) {
-                Text("Text")
+                Text("stories_text")
             }
             .font(.system(size: 12))
             .foregroundColor(.white)
