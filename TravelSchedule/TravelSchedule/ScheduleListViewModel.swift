@@ -98,12 +98,21 @@ class ScheduleListViewModel: ObservableObject {
             }
             
             allSegments = displaySegments
-            applyFilters()  // Применяем текущие фильтры
+            applyFilters()
             isLoading = false
             
         } catch {
-            errorMessage = "Ошибка загрузки расписания: \(error.localizedDescription)"
+            let errorType = determineErrorType(error)
+            switch errorType {
+            case .noInternet:
+                errorMessage = String(localized: "error_no_internet")
+            case .timeout:
+                errorMessage = String(localized: "error_timeout")
+            case .serverError, .other:
+                errorMessage = "Ошибка загрузки расписания: \(error.localizedDescription)"
+            }
             isLoading = false
+            print("Error loading schedule: \(error)")
         }
     }
     

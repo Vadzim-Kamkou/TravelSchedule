@@ -26,6 +26,7 @@ struct CitySelectionView: View {
     @State private var allSettlements: [Settlement] = []
     @State private var isLoading = false
     @State private var errorMessage: String?
+    @State private var errorType: NetworkErrorType? = nil
     
     @FocusState private var isSearchFocused: Bool
     
@@ -74,23 +75,39 @@ struct CitySelectionView: View {
                         .font(.system(size: 17))
                         .foregroundColor(.gray)
                 }
-            } else if let error = errorMessage {
-                
-                VStack(spacing: 16) {
-                    Image(systemName: "exclamationmark.triangle")
-                        .font(.system(size: 50))
-                        .foregroundColor(.red)
-                    Text("loading_error")
-                        .font(.headline)
-                    Text(error)
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                    Button("try_again") {
-                        loadAllStations()
+            } else if let error = errorMessage, let type = errorType {
+                GeometryReader { geometry in
+                    VStack(spacing: 16) {
+                        Image(type.imageName)
+                            .resizable()
+                            .scaledToFit()
+                            .cornerRadius(70)
+                            .frame(width: 223, height: 223)
+                        
+                        Text(LocalizedStringKey(type.titleKey))
+                            .font(.system(size: 24))
+                            .fontWeight(.bold)
+                            .foregroundColor(.appBlack)
+                        
+                        if type == .other {
+                            Text(error)
+                                .font(.system(size: 17))
+                                .foregroundColor(.gray)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal, 32)
+                        }
+                        
+                        // Кнопка повтора
+                        Button("try_again") {
+                            errorMessage = nil
+                            errorType = nil
+                            loadAllStations()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .padding(.top, 8)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .position(x: geometry.size.width / 2, y: geometry.size.height / 2 - 50)
                 }
             } else {
                 VStack(spacing: 0) {
@@ -171,6 +188,7 @@ struct CitySelectionView: View {
             } catch {
                 await MainActor.run {
                     isLoading = false
+                    errorType = determineErrorType(error)
                     errorMessage = error.localizedDescription
                 }
                 print("Error loading stations: \(error)")

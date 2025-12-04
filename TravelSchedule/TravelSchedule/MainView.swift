@@ -22,8 +22,6 @@ struct MainView: View {
         UINavigationBar.appearance().tintColor = UIColor(named: "appBlack") ?? UIColor.black
     }
     
-    
-    
     // MARK: - State Route
     @State private var departureSettlement: Settlement? = nil
     @State private var departureStation: Station? = nil
@@ -31,12 +29,13 @@ struct MainView: View {
     @State private var arrivalStation: Station? = nil
     @State private var allStationsData: AllStations? = nil
     @State private var isLoadingStations = false
-    
+    @State private var errorMessage: String? = nil
     
     // MARK: - Navigation State
     @State private var showDepartureSelection = false
     @State private var showArrivalSelection = false
     @State private var showScheduleList = false
+    @State private var showNetworkError = false
     
     
     var body: some View {
@@ -98,6 +97,13 @@ struct MainView: View {
                     .padding(.bottom, 49),
                 alignment: .bottom
             )
+            // ← Добавьте navigationDestination для ошибки:
+            .navigationDestination(isPresented: $showNetworkError) {
+                NetworkErrorView(errorMessage: errorMessage ?? "Неизвестная ошибка") {
+                    errorMessage = nil
+                    loadAllStationsIfNeeded()
+                }
+            }
             .navigationDestination(isPresented: $showDepartureSelection) {
                 CitySelectionView(
                     mode: .departure,
@@ -144,7 +150,6 @@ struct MainView: View {
         }
         .tint(.appBlack)
         .onAppear {
-            //testAllServices()
             loadAllStationsIfNeeded()
         }
     }
@@ -168,8 +173,15 @@ struct MainView: View {
                 
                 await MainActor.run {
                     allStationsData = stations
+                    errorMessage = nil
+                    showNetworkError = false
                 }
             } catch {
+                await MainActor.run {
+                    errorMessage = error.localizedDescription
+                    showNetworkError = true
+                    
+                }
                 print("Error loading stations: \(error)")
             }
         }
@@ -237,3 +249,34 @@ func testAllServices() {
         print("\nAll test finished!")
     }
 }
+
+struct NetworkErrorView: View {
+    let errorMessage: String
+    let onRetry: () -> Void
+    
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        ZStack {
+            Color.white.ignoresSafeArea()
+            
+            VStack(spacing: 16) {
+                Image(.errorsNoInternet)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 223, height: 223)
+                Text("error_no_internet")
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundColor(.appBlack)
+                Button("try_again") {
+                    onRetry()
+                }
+                .buttonStyle(.borderedProminent)
+                .padding(.top, 8)
+            }
+        }
+        .navigationBarBackButtonHidden(false)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+

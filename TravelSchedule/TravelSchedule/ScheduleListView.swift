@@ -32,18 +32,24 @@ struct ScheduleListView: View {
                         .foregroundColor(.gray)
                 }
             } else if let error = viewModel.errorMessage {
-                VStack(spacing: 16) {
-                    Spacer()
-                    Text("error_title")
-                        .font(.system(size: 24))
-                        .fontWeight(.bold)
-                        .foregroundColor(.appBlack)
-                    Text(error)
-                        .font(.system(size: 17))
-                        .foregroundColor(.appGrayUniversal)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 32)
-                    Spacer()
+                GeometryReader { geometry in
+                    VStack(spacing: 16) {
+                        Spacer()
+                        
+                        errorImage(for: error)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 223, height: 223)
+                        
+                        Text("error_server_error")
+                            .font(.system(size: 24))
+                            .fontWeight(.bold)
+                            .foregroundColor(.appBlack)
+                        
+                        Spacer()
+                    }
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .position(x: geometry.size.width / 2, y: geometry.size.height / 2 - 50)
                 }
             } else if viewModel.segments.isEmpty {
                 VStack {
@@ -53,7 +59,7 @@ struct ScheduleListView: View {
                         .fontWeight(.bold)
                         .foregroundColor(.appBlack)
                     if viewModel.filterSettings.hasActiveFilters {
-                        // Разумно добавить кнопку уточнить время, чтобы изменить настройки фильтров, а не запускать поиск заново.
+                        // Разумно добавить кнопку уточнить время
                     }
                     Spacer()
                 }
@@ -91,7 +97,6 @@ struct ScheduleListView: View {
                             Text("specify_time")
                                 .font(.system(size: 17, weight: .semibold))
                             
-                            // Показываем индикатор активных фильтров
                             if viewModel.filterSettings.hasActiveFilters {
                                 Circle()
                                     .fill(Color.appRedUniversal)
@@ -120,8 +125,16 @@ struct ScheduleListView: View {
             )
         }
         .onChange(of: viewModel.filterSettings) { oldValue, newValue in
-                    // Применяем фильтры при изменении настроек
-                    viewModel.applyFilters()
-                }
+            viewModel.applyFilters()
+        }
+    }
+    
+    // Функция вне body
+    private func errorImage(for error: String) -> Image {
+        if error.contains("интернет") || error.contains("internet") || error.contains("соединение") {
+            return Image(.errorsNoInternet)
+        } else {
+            return Image(.errorsServerError)
+        }
     }
 }
