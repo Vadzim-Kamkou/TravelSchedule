@@ -83,6 +83,13 @@ struct MainView: View {
                 
                 ZStack {
                     Color.white.edgesIgnoringSafeArea(.top)
+                    VStack(alignment: .leading, spacing: 2) {
+                        //TODO SETTINGS
+                        Text("Settings")
+                            .font(.system(size: 17, weight: .regular))
+                            .foregroundColor(.appBlack)
+                    }
+                    .padding(.leading, 8)
                 }
                 .tabItem {
                     Image(.tapBarSettingsIconPassive)
@@ -97,7 +104,6 @@ struct MainView: View {
                     .padding(.bottom, 49),
                 alignment: .bottom
             )
-            // ← Добавьте navigationDestination для ошибки:
             .navigationDestination(isPresented: $showNetworkError) {
                 NetworkErrorView(errorMessage: errorMessage ?? "Неизвестная ошибка") {
                     errorMessage = nil

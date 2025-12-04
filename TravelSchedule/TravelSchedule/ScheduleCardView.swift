@@ -2,92 +2,105 @@ import SwiftUI
 
 struct ScheduleCardView: View {
     let segment: ScheduleSegmentDisplay
+    @State private var showCarrierInfo = false
     
     var body: some View {
-        VStack {
-            Spacer()
-            
-            VStack(spacing: 4) {
-                HStack(alignment: .top, spacing: 0) {
-                    if let logoURL = segment.carrierLogoURL,
-                       let url = URL(string: logoURL) {
-                        AsyncImage(url: url) { phase in
-                            switch phase {
-                            case .empty:
-                                CarrierPlaceholder()
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 38, height: 38)
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                            case .failure:
-                                CarrierPlaceholder()
-                            @unknown default:
-                                CarrierPlaceholder()
+        Button {
+            if segment.carrierCode != nil {
+                showCarrierInfo = true
+            }
+        } label: {
+            VStack {
+                Spacer()
+                
+                VStack(spacing: 4) {
+                    HStack(alignment: .top, spacing: 0) {
+                        if let logoURL = segment.carrierLogoURL,
+                           let url = URL(string: logoURL) {
+                            AsyncImage(url: url) { phase in
+                                switch phase {
+                                case .empty:
+                                    CarrierPlaceholder()
+                                case .success(let image):
+                                    image
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 38, height: 38)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                case .failure:
+                                    CarrierPlaceholder()
+                                @unknown default:
+                                    CarrierPlaceholder()
+                                }
+                            }
+                        } else {
+                            CarrierPlaceholder()
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(segment.carrierName)
+                                .font(.system(size: 17, weight: .regular))
+                                .foregroundColor(.appBlack)
+                                .lineLimit(1)
+                            
+                            if segment.hasTransfers {
+                                Text("with_transfer")
+                                    .font(.system(size: 12, weight: .regular))
+                                    .foregroundColor(.red)
                             }
                         }
-                    } else {
-                        CarrierPlaceholder()
+                        .padding(.leading, 8)
+                        
+                        Spacer()
+                        
+                        Text(segment.departureDate)
+                            .font(.system(size: 12, weight: .regular))
+                            .foregroundColor(.appBlack)
                     }
+                    .frame(height: 38)
                     
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(segment.carrierName)
+                    HStack(spacing: 0) {
+                        Text(segment.departureTime)
                             .font(.system(size: 17, weight: .regular))
                             .foregroundColor(.appBlack)
-                            .lineLimit(1)
+                            .fixedSize()
                         
-                        if segment.hasTransfers {
-                            Text("with_transfer")
-                                .font(.system(size: 12, weight: .regular))
-                                .foregroundColor(.red)
-                        }
+                        Rectangle()
+                            .fill(Color.appGrayUniversal)
+                            .frame(height: 1)
+                            .padding(.horizontal, 4)
+                        
+                        Text(segment.duration)
+                            .font(.system(size: 12, weight: .regular))
+                            .foregroundColor(.appBlack)
+                            .fixedSize()
+                        
+                        Rectangle()
+                            .fill(Color.appGrayUniversal)
+                            .frame(height: 1)
+                            .padding(.horizontal, 4)
+                        
+                        Text(segment.arrivalTime)
+                            .font(.system(size: 17, weight: .regular))
+                            .foregroundColor(.appBlack)
+                            .fixedSize()
                     }
-                    .padding(.leading, 8)
-                    
-                    Spacer()
-                    
-                    Text(segment.departureDate)
-                        .font(.system(size: 12, weight: .regular))
-                        .foregroundColor(.appBlack)
+                    .frame(height: 48)
                 }
-                .frame(height: 38)
-                
-                HStack(spacing: 0) {
-                    Text(segment.departureTime)
-                        .font(.system(size: 17, weight: .regular))
-                        .foregroundColor(.appBlack)
-                        .fixedSize()
-                    
-                    Rectangle()
-                        .fill(Color.appGrayUniversal)
-                        .frame(height: 1)
-                        .padding(.horizontal, 4)
-                    
-                    Text(segment.duration)
-                        .font(.system(size: 12, weight: .regular))
-                        .foregroundColor(.appBlack)
-                        .fixedSize()
-                    
-                    Rectangle()
-                        .fill(Color.appGrayUniversal)
-                        .frame(height: 1)
-                        .padding(.horizontal, 4)
-
-                    Text(segment.arrivalTime)
-                        .font(.system(size: 17, weight: .regular))
-                        .foregroundColor(.appBlack)
-                        .fixedSize()
-                }
-                .frame(height: 48)
+                .frame(height: 90)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 16)
             }
-            .frame(height: 90)
-            .frame(maxWidth: .infinity)
-            .padding(.horizontal, 16)
+            .frame(height: 104)
+            .background(Color.appLightGray)
+            .cornerRadius(24)
         }
-        .frame(height: 104)
-        .background(Color.appLightGray)
-        .cornerRadius(24)
+        .buttonStyle(.plain)
+        .navigationDestination(isPresented: $showCarrierInfo) {
+            if let code = segment.carrierCode {
+                CarrierInfoView(carrierCode: code)
+            }
+        }
     }
 }
 

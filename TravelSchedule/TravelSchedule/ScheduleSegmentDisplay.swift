@@ -3,6 +3,7 @@ import Foundation
 struct ScheduleSegmentDisplay: Identifiable {
     let id = UUID()
     let carrierName: String
+    let carrierCode: Int?
     let carrierLogoURL: String?
     let hasTransfers: Bool
     let departureDate: String
@@ -13,6 +14,8 @@ struct ScheduleSegmentDisplay: Identifiable {
     // Initializer для API данных
     init(segment: Components.Schemas.Segment, carrierLogoURL: String?) {
         self.carrierName = segment.thread?.carrier?.title ?? String(localized: "unknown_carrier")
+        self.carrierCode = segment.thread?.carrier?.code
+
         self.carrierLogoURL = carrierLogoURL
         self.hasTransfers = false
         
@@ -42,8 +45,9 @@ struct ScheduleSegmentDisplay: Identifiable {
     }
     
     // Initializer для моковых данных
-    init(carrierName: String, carrierLogoURL: String?, hasTransfers: Bool, departureDate: String, departureTime: String, arrivalTime: String, duration: String) {
+    init(carrierName: String, carrierCode: Int?, carrierLogoURL: String?, hasTransfers: Bool, departureDate: String, departureTime: String, arrivalTime: String, duration: String) {
         self.carrierName = carrierName
+        self.carrierCode = carrierCode
         self.carrierLogoURL = carrierLogoURL
         self.hasTransfers = hasTransfers
         self.departureDate = departureDate
@@ -82,6 +86,7 @@ extension ScheduleSegmentDisplay {
     static var mock: ScheduleSegmentDisplay {
         ScheduleSegmentDisplay(
             carrierName: "РЖД",
+            carrierCode: 112,
             carrierLogoURL: nil,
             hasTransfers: false,
             departureDate: "28 ноября",
@@ -94,6 +99,7 @@ extension ScheduleSegmentDisplay {
     static var mockWithTransfer: ScheduleSegmentDisplay {
         ScheduleSegmentDisplay(
             carrierName: "Аэрофлот",
+            carrierCode: 26,
             carrierLogoURL: "https://yastat.net/s3/rasp/media/data/company/logo/svg/SU.svg",
             hasTransfers: true,
             departureDate: "29 ноября",
@@ -106,6 +112,7 @@ extension ScheduleSegmentDisplay {
     static var mockLongName: ScheduleSegmentDisplay {
         ScheduleSegmentDisplay(
             carrierName: "Северо-Западная Транспортная Компания",
+            carrierCode: nil,
             carrierLogoURL: nil,
             hasTransfers: false,
             departureDate: "1 декабря",
@@ -118,6 +125,7 @@ extension ScheduleSegmentDisplay {
     static var mockShortTrip: ScheduleSegmentDisplay {
         ScheduleSegmentDisplay(
             carrierName: "Ласточка",
+            carrierCode: nil,
             carrierLogoURL: nil,
             hasTransfers: false,
             departureDate: "30 ноября",
