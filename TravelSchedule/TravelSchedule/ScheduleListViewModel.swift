@@ -5,12 +5,19 @@ import OpenAPIURLSession
 
 @MainActor
 class ScheduleListViewModel: ObservableObject {
-    @Published var segments: [ScheduleSegmentDisplay] = []
+    @Published var allSegments: [ScheduleSegmentDisplay] = []  // Все загруженные сегменты
+    @Published var filteredSegments: [ScheduleSegmentDisplay] = []  // Отфильтрованные    @Published var isLoading = false
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published var filterSettings = FilterSettings()  // Текущие фильтры
+
     
     private let client: Client
     private let apiKey: String
+    
+    var segments: [ScheduleSegmentDisplay] {
+        filteredSegments
+    }
     
     init() {
         do {
@@ -36,7 +43,8 @@ class ScheduleListViewModel: ObservableObject {
         
         isLoading = true
         errorMessage = nil
-        segments = []
+        allSegments = []
+        filteredSegments = []
         
         do {
             let scheduleService = ScheduleBetweenStationsService(
@@ -89,7 +97,8 @@ class ScheduleListViewModel: ObservableObject {
                 displaySegments.append(displaySegment)
             }
             
-            segments = displaySegments
+            allSegments = displaySegments
+            applyFilters()  // Применяем текущие фильтры
             isLoading = false
             
         } catch {
@@ -97,4 +106,21 @@ class ScheduleListViewModel: ObservableObject {
             isLoading = false
         }
     }
+    
+    func applyFilters() {
+            if filterSettings.hasActiveFilters {
+                filteredSegments = allSegments.filter { segment in
+                    filterSettings.matches(segment: segment)
+                }
+            } else {
+                // Если фильтры не активны, показываем все
+                filteredSegments = allSegments
+            }
+        }
+        
+        // Обновляет фильтры и применяет их
+        func updateFilters(_ newFilters: FilterSettings) {
+            filterSettings = newFilters
+            applyFilters()
+        }
 }

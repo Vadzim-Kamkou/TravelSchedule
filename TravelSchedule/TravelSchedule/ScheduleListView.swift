@@ -7,6 +7,7 @@ struct ScheduleListView: View {
     let arrivalStation: Station
     
     @StateObject private var viewModel = ScheduleListViewModel()
+    @State private var showFilters = false
     @Environment(\.dismiss) private var dismiss
     
     private var routeTitle: String {
@@ -51,6 +52,9 @@ struct ScheduleListView: View {
                         .font(.system(size: 24))
                         .fontWeight(.bold)
                         .foregroundColor(.appBlack)
+                    if viewModel.filterSettings.hasActiveFilters {
+                        // Разумно добавить кнопку уточнить время, чтобы изменить настройки фильтров, а не запускать поиск заново.
+                    }
                     Spacer()
                 }
             } else {
@@ -81,16 +85,24 @@ struct ScheduleListView: View {
                     Spacer()
                     
                     Button {
-                        // TODO: Переход на экран фильтрации
-                        print("Уточнить время")
+                        showFilters = true
                     } label: {
-                        Text("specify_time")
-                            .font(.system(size: 17, weight: .semibold))
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 60)
-                            .background(Color.appBlueUniversal)
-                            .cornerRadius(16)
+                        HStack {
+                            Text("specify_time")
+                                .font(.system(size: 17, weight: .semibold))
+                            
+                            // Показываем индикатор активных фильтров
+                            if viewModel.filterSettings.hasActiveFilters {
+                                Circle()
+                                    .fill(Color.appRedUniversal)
+                                    .frame(width: 8, height: 8)
+                            }
+                        }
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 60)
+                        .background(Color.appBlueUniversal)
+                        .cornerRadius(16)
                     }
                     .padding(.horizontal, 16)
                     .padding(.bottom, 16)
@@ -98,11 +110,18 @@ struct ScheduleListView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(isPresented: $showFilters) {
+            FilterView(filterSettings: $viewModel.filterSettings)
+        }
         .task {
             await viewModel.loadSchedule(
                 from: departureStation,
                 to: arrivalStation
             )
         }
+        .onChange(of: viewModel.filterSettings) { oldValue, newValue in
+                    // Применяем фильтры при изменении настроек
+                    viewModel.applyFilters()
+                }
     }
 }
