@@ -40,7 +40,7 @@ struct ScheduleCardView: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(segment.carrierName)
                                 .font(.system(size: 17, weight: .regular))
-                                .foregroundColor(.appBlack)
+                                .foregroundColor(.appBlackUniversal)
                                 .lineLimit(1)
                             
                             if segment.hasTransfers {
@@ -55,14 +55,14 @@ struct ScheduleCardView: View {
                         
                         Text(segment.departureDate)
                             .font(.system(size: 12, weight: .regular))
-                            .foregroundColor(.appBlack)
+                            .foregroundColor(.appBlackUniversal)
                     }
                     .frame(height: 38)
                     
                     HStack(spacing: 0) {
                         Text(segment.departureTime)
                             .font(.system(size: 17, weight: .regular))
-                            .foregroundColor(.appBlack)
+                            .foregroundColor(.appBlackUniversal)
                             .fixedSize()
                         
                         Rectangle()
@@ -72,7 +72,7 @@ struct ScheduleCardView: View {
                         
                         Text(segment.duration)
                             .font(.system(size: 12, weight: .regular))
-                            .foregroundColor(.appBlack)
+                            .foregroundColor(.appBlackUniversal)
                             .fixedSize()
                         
                         Rectangle()
@@ -82,7 +82,7 @@ struct ScheduleCardView: View {
                         
                         Text(segment.arrivalTime)
                             .font(.system(size: 17, weight: .regular))
-                            .foregroundColor(.appBlack)
+                            .foregroundColor(.appBlackUniversal)
                             .fixedSize()
                     }
                     .frame(height: 48)
@@ -92,7 +92,7 @@ struct ScheduleCardView: View {
                 .padding(.horizontal, 16)
             }
             .frame(height: 104)
-            .background(Color.appLightGray)
+            .background(Color.appLightGrayUniversal)
             .cornerRadius(24)
         }
         .buttonStyle(.plain)

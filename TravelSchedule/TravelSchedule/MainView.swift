@@ -3,25 +3,6 @@ import OpenAPIURLSession
 
 struct MainView: View {
     
-    init() {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .white
-        appearance.shadowColor = .clear
-        appearance.shadowImage = UIImage()
-        appearance.titleTextAttributes = [
-            .foregroundColor: UIColor.black,
-            .font: UIFont.systemFont(ofSize: 17, weight: .semibold)
-        ]
-        appearance.backButtonAppearance.normal.titlePositionAdjustment = UIOffset(horizontal: -1000, vertical: 0)
-        
-        UINavigationBar.appearance().standardAppearance = appearance
-        UINavigationBar.appearance().compactAppearance = appearance
-        UINavigationBar.appearance().scrollEdgeAppearance = appearance
-        UINavigationBar.appearance().compactScrollEdgeAppearance = appearance
-        UINavigationBar.appearance().tintColor = UIColor(named: "appBlack") ?? UIColor.black
-    }
-    
     // MARK: - State Route
     @State private var departureSettlement: Settlement? = nil
     @State private var departureStation: Station? = nil
@@ -42,7 +23,7 @@ struct MainView: View {
         NavigationStack {
             TabView {
                 ZStack {
-                    Color.white.edgesIgnoringSafeArea(.top)
+                    Color("appWhite").ignoresSafeArea()
                     
                     VStack(spacing: 0) {
                         
@@ -82,7 +63,7 @@ struct MainView: View {
                 .tag(0)
                 
                 ZStack {
-                    Color.white.edgesIgnoringSafeArea(.top)
+                    Color("appWhite").ignoresSafeArea()
                     VStack(alignment: .leading, spacing: 2) {
                         //TODO SETTINGS
                         Text("Settings")
@@ -97,10 +78,11 @@ struct MainView: View {
                 .tag(1)
             }
             .tint(.appBlack)
+
             .overlay(
                 Rectangle()
                     .frame(height: 0.5)
-                    .foregroundColor(.gray.opacity(1))
+                    .foregroundColor(.appBlackTransparent)
                     .padding(.bottom, 49),
                 alignment: .bottom
             )
@@ -153,12 +135,40 @@ struct MainView: View {
                     )
                 }
             }
+            .toolbarBackground(Color("appWhite"), for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
         }
         .tint(.appBlack)
         .onAppear {
+            setupNavigationBarAppearance()
             loadAllStationsIfNeeded()
         }
     }
+    
+    private func setupNavigationBarAppearance() {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            
+            if let backgroundColor = UIColor(named: "appWhite") {
+                appearance.backgroundColor = backgroundColor
+            }
+            
+            appearance.shadowColor = .clear
+            appearance.shadowImage = UIImage()
+            
+            appearance.titleTextAttributes = [
+                .foregroundColor: UIColor(named: "appBlack") ?? UIColor.label,
+                .font: UIFont.systemFont(ofSize: 17, weight: .semibold)
+            ]
+            
+            appearance.backButtonAppearance.normal.titlePositionAdjustment = UIOffset(horizontal: -1000, vertical: 0)
+            
+            UINavigationBar.appearance().standardAppearance = appearance
+            UINavigationBar.appearance().compactAppearance = appearance
+            UINavigationBar.appearance().scrollEdgeAppearance = appearance
+            UINavigationBar.appearance().compactScrollEdgeAppearance = appearance
+            UINavigationBar.appearance().tintColor = UIColor(named: "appBlack")
+        }
     
     private func loadAllStationsIfNeeded() {
         guard allStationsData == nil else { return }
@@ -209,7 +219,7 @@ struct StoryCardView: View {
                 Text("stories_text")
             }
             .font(.system(size: 12))
-            .foregroundColor(.white)
+            .foregroundColor(.appWhiteUniversal)
             .padding(8)
         }
         .frame(width: 92, height: 140)
@@ -264,7 +274,7 @@ struct NetworkErrorView: View {
     
     var body: some View {
         ZStack {
-            Color.white.ignoresSafeArea()
+            Color.appWhite.ignoresSafeArea()
             
             VStack(spacing: 16) {
                 Image(.errorsNoInternet)
@@ -285,4 +295,3 @@ struct NetworkErrorView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
-

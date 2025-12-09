@@ -54,12 +54,15 @@ struct StationSelectionView: View {
                             StationRow(station: station)
                         }
                         .listRowSeparator(.hidden)
+                        .listRowBackground(Color.appWhite)
                     }
                 }
                 .listStyle(.plain)
+                .scrollContentBackground(.hidden)
                 .scrollDismissesKeyboard(.interactively)
             }
         }
+        .background(Color.appWhite)
         .navigationTitle(navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {

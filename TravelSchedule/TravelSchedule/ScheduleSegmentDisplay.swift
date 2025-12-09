@@ -11,7 +11,6 @@ struct ScheduleSegmentDisplay: Identifiable {
     let arrivalTime: String
     let duration: String
     
-    // Initializer для API данных
     init(segment: Components.Schemas.Segment, carrierLogoURL: String?) {
         self.carrierName = segment.thread?.carrier?.title ?? String(localized: "unknown_carrier")
         self.carrierCode = segment.thread?.carrier?.code
@@ -19,32 +18,27 @@ struct ScheduleSegmentDisplay: Identifiable {
         self.carrierLogoURL = carrierLogoURL
         self.hasTransfers = false
         
-        // Форматируем время отправления (API возвращает "06:55:00")
         if let departureString = segment.departure {
             self.departureTime = Self.formatTime(departureString)
         } else {
             self.departureTime = ""
         }
         
-        // Форматируем время прибытия
         if let arrivalString = segment.arrival {
             self.arrivalTime = Self.formatTime(arrivalString)
         } else {
             self.arrivalTime = ""
         }
         
-        // Форматируем длительность
         if let durationSeconds = segment.duration {
             self.duration = Self.formatDuration(durationSeconds)
         } else {
             self.duration = ""
         }
         
-        // Используем текущую дату (так как API не возвращает дату в сегменте)
         self.departureDate = Self.formatCurrentDate()
     }
     
-    // Initializer для моковых данных
     init(carrierName: String, carrierCode: Int?, carrierLogoURL: String?, hasTransfers: Bool, departureDate: String, departureTime: String, arrivalTime: String, duration: String) {
         self.carrierName = carrierName
         self.carrierCode = carrierCode
@@ -56,7 +50,6 @@ struct ScheduleSegmentDisplay: Identifiable {
         self.duration = duration
     }
     
-    // Форматирует "06:55:00" → "06:55"
     private static func formatTime(_ timeString: String) -> String {
         let components = timeString.components(separatedBy: ":")
         if components.count >= 2 {
@@ -65,7 +58,6 @@ struct ScheduleSegmentDisplay: Identifiable {
         return timeString
     }
     
-    // Возвращает текущую дату в формате "28 ноября"
     private static func formatCurrentDate() -> String {
         let date = Date()
         let formatter = DateFormatter()
@@ -74,14 +66,12 @@ struct ScheduleSegmentDisplay: Identifiable {
         return formatter.string(from: date)
     }
     
-    // Форматирует секунды → "3 часа"
     private static func formatDuration(_ seconds: Int) -> String {
         let hours = Int(round(Double(seconds) / 3600.0))
         return String(format: NSLocalizedString("hours_count %lld", comment: ""), hours)    }
 }
 
 // MARK: - Mock Data для Preview
-
 extension ScheduleSegmentDisplay {
     static var mock: ScheduleSegmentDisplay {
         ScheduleSegmentDisplay(

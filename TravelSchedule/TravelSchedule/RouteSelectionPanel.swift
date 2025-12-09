@@ -44,7 +44,7 @@ struct RouteSelectionPanel: View {
                            onArrivalFieldTap()
                        }
                    }
-                   .background(Color.white)
+                   .background(Color.appWhiteUniversal)
                    .cornerRadius(16)
                    .padding(.leading, 16)
                    .padding(.trailing, 16+36+16)
@@ -82,7 +82,6 @@ struct RouteSelectionPanel: View {
        }
    }
 
-
 struct RouteFieldView: View {
     let placeholder: String
     let selectedSettlement: Settlement?
@@ -103,7 +102,7 @@ struct RouteFieldView: View {
         HStack {
             Text(displayText)
                 .font(.system(size: 17, weight: .regular))
-                .foregroundColor(isSelected ? .appBlack : .appGrayUniversal.opacity(0.5))
+                .foregroundColor(isSelected ? .appBlackUniversal : .appGrayUniversal.opacity(0.5))
                 .lineLimit(1)
             
             Spacer()

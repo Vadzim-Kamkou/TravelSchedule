@@ -5,7 +5,7 @@ struct CarrierInfoView: View {
     
     var body: some View {
         ZStack {
-            Color.white.ignoresSafeArea()
+            Color.appWhite.ignoresSafeArea()
             
             VStack {
                 // TODO

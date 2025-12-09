@@ -21,8 +21,7 @@ struct ScheduleListView: View {
     
     var body: some View {
         ZStack {
-            Color.white.ignoresSafeArea()
-            
+            Color.appWhite.ignoresSafeArea()
             if viewModel.isLoading {
                 VStack(spacing: 16) {
                     ProgressView()
@@ -31,6 +30,9 @@ struct ScheduleListView: View {
                         .font(.system(size: 17))
                         .foregroundColor(.gray)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.appWhite)
+                
             } else if let error = viewModel.errorMessage {
                 GeometryReader { geometry in
                     VStack(spacing: 16) {
@@ -51,6 +53,7 @@ struct ScheduleListView: View {
                     .frame(width: geometry.size.width, height: geometry.size.height)
                     .position(x: geometry.size.width / 2, y: geometry.size.height / 2 - 50)
                 }
+                .background(Color.appWhite)
             } else if viewModel.segments.isEmpty {
                 VStack {
                     Spacer()
@@ -59,10 +62,12 @@ struct ScheduleListView: View {
                         .fontWeight(.bold)
                         .foregroundColor(.appBlack)
                     if viewModel.filterSettings.hasActiveFilters {
-                        // Разумно добавить кнопку уточнить время
+                        // ?Кнопка уточнить время
                     }
                     Spacer()
                 }
+                .background(Color.appWhite)
+
             } else {
                 VStack(spacing: 0) {
                     Text(routeTitle)
@@ -86,7 +91,8 @@ struct ScheduleListView: View {
                     
                     Spacer()
                 }
-                
+                .background(Color.appWhite)
+
                 VStack {
                     Spacer()
                     
@@ -129,7 +135,6 @@ struct ScheduleListView: View {
         }
     }
     
-    // Функция вне body
     private func errorImage(for error: String) -> Image {
         if error.contains("интернет") || error.contains("internet") || error.contains("соединение") {
             return Image(.errorsNoInternet)

@@ -5,12 +5,12 @@ import OpenAPIURLSession
 
 @MainActor
 class ScheduleListViewModel: ObservableObject {
-    @Published var allSegments: [ScheduleSegmentDisplay] = []  // Все загруженные сегменты
-    @Published var filteredSegments: [ScheduleSegmentDisplay] = []  // Отфильтрованные    @Published var isLoading = false
+    @Published var allSegments: [ScheduleSegmentDisplay] = []
+    @Published var filteredSegments: [ScheduleSegmentDisplay] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
-    @Published var filterSettings = FilterSettings()  // Текущие фильтры
-
+    @Published var filterSettings = FilterSettings()
+    
     
     private let client: Client
     private let apiKey: String
@@ -59,7 +59,7 @@ class ScheduleListViewModel: ObservableObject {
                 transportTypes: nil,
                 limit: 10
             )
-
+            
             
             guard let fetchedSegments = schedule.segments else {
                 errorMessage = "Нет доступных рейсов"
@@ -117,19 +117,17 @@ class ScheduleListViewModel: ObservableObject {
     }
     
     func applyFilters() {
-            if filterSettings.hasActiveFilters {
-                filteredSegments = allSegments.filter { segment in
-                    filterSettings.matches(segment: segment)
-                }
-            } else {
-                // Если фильтры не активны, показываем все
-                filteredSegments = allSegments
+        if filterSettings.hasActiveFilters {
+            filteredSegments = allSegments.filter { segment in
+                filterSettings.matches(segment: segment)
             }
+        } else {
+            filteredSegments = allSegments
         }
-        
-        // Обновляет фильтры и применяет их
-        func updateFilters(_ newFilters: FilterSettings) {
-            filterSettings = newFilters
-            applyFilters()
-        }
+    }
+    
+    func updateFilters(_ newFilters: FilterSettings) {
+        filterSettings = newFilters
+        applyFilters()
+    }
 }

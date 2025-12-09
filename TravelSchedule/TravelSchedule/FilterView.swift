@@ -19,7 +19,7 @@ struct FilterView: View {
     
     var body: some View {
         ZStack {
-            Color.white.ignoresSafeArea()
+            Color.appWhite.ignoresSafeArea()
             
             VStack(alignment: .leading, spacing: 0) {
                 Text("filter_departure_time")
@@ -136,7 +136,7 @@ struct TimeFilterRow: View {
                     if isSelected {
                         Image(systemName: "checkmark")
                             .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(.white)
+                            .foregroundColor(.appWhite)
                     }
                 }
             }

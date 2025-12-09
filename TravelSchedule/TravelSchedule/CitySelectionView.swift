@@ -73,8 +73,10 @@ struct CitySelectionView: View {
                         .scaleEffect(1.5)
                     Text("loading_stations")
                         .font(.system(size: 17))
-                        .foregroundColor(.gray)
+                        .foregroundColor(.appBlack)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.appWhite)
             } else if let error = errorMessage, let type = errorType {
                 GeometryReader { geometry in
                     VStack(spacing: 16) {
@@ -97,7 +99,6 @@ struct CitySelectionView: View {
                                 .padding(.horizontal, 32)
                         }
                         
-                        // Кнопка повтора
                         Button("try_again") {
                             errorMessage = nil
                             errorType = nil
@@ -142,14 +143,17 @@ struct CitySelectionView: View {
                                     CityRow(settlement: settlement)
                                 }
                                 .listRowSeparator(.hidden)
+                                .listRowBackground(Color.appWhite)
                             }
                         }
                         .listStyle(.plain)
+                        .scrollContentBackground(.hidden)
                         .scrollDismissesKeyboard(.interactively)
                     }
                 }
             }
         }
+        .background(Color.appWhite)
         .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
@@ -264,5 +268,6 @@ struct CityRow: View {
                 .foregroundColor(.appBlack)
         }
         .contentShape(Rectangle())
+        .background(Color.appWhite)
     }
 }
