@@ -23,7 +23,7 @@ final class AllStationsService: AllStationsServiceProtocol {
         ))
         
         var fullData = Data()
-        for try await chunk in response.ok.body.html {
+        for try await chunk in try response.ok.body.html {
             fullData.append(contentsOf: chunk)
         }
         

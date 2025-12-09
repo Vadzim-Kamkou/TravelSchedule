@@ -15,33 +15,9 @@
 		0DB811232EBA51A3000C5D57 /* TravelSchedule.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TravelSchedule.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		0DB8114B2EBA5868000C5D57 /* Exceptions for "TravelSchedule" folder in "TravelSchedule" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"Yaml/openapi-generator-config.yaml",
-			);
-			target = 0DB811222EBA51A3000C5D57 /* TravelSchedule */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		0DB8114C2EBA5868000C5D57 /* Exceptions for "TravelSchedule" folder in "Compile Sources" phase from "TravelSchedule" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = 0DB8111F2EBA51A3000C5D57 /* Sources */;
-			membershipExceptions = (
-				"Yaml/openapi-generator-config.yaml",
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		0DB811252EBA51A3000C5D57 /* TravelSchedule */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				0DB8114B2EBA5868000C5D57 /* Exceptions for "TravelSchedule" folder in "TravelSchedule" target */,
-				0DB8114C2EBA5868000C5D57 /* Exceptions for "TravelSchedule" folder in "Compile Sources" phase from "TravelSchedule" target */,
-			);
 			path = TravelSchedule;
 			sourceTree = "<group>";
 		};
@@ -90,7 +66,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				0DB811442EBA573E000C5D57 /* PBXTargetDependency */,
+				0D7EF37F2EE8902100B321EF /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				0DB811252EBA51A3000C5D57 /* TravelSchedule */,
@@ -165,9 +141,9 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		0DB811442EBA573E000C5D57 /* PBXTargetDependency */ = {
+		0D7EF37F2EE8902100B321EF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			productRef = 0DB811432EBA573E000C5D57 /* OpenAPIGenerator */;
+			productRef = 0D7EF37E2EE8902100B321EF /* OpenAPIGenerator */;
 		};
 /* End PBXTargetDependency section */
 
@@ -420,6 +396,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		0D7EF37E2EE8902100B321EF /* OpenAPIGenerator */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0DB811402EBA5731000C5D57 /* XCRemoteSwiftPackageReference "swift-openapi-generator" */;
+			productName = "plugin:OpenAPIGenerator";
+		};
 		0DB8113B2EBA55F7000C5D57 /* OpenAPIRuntime */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 0DB8113A2EBA55F7000C5D57 /* XCRemoteSwiftPackageReference "swift-openapi-runtime" */;
@@ -429,11 +410,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0DB8113D2EBA5624000C5D57 /* XCRemoteSwiftPackageReference "swift-openapi-urlsession" */;
 			productName = OpenAPIURLSession;
-		};
-		0DB811432EBA573E000C5D57 /* OpenAPIGenerator */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0DB811402EBA5731000C5D57 /* XCRemoteSwiftPackageReference "swift-openapi-generator" */;
-			productName = "plugin:OpenAPIGenerator";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
