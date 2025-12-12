@@ -2,8 +2,6 @@ import Foundation
 import OpenAPIRuntime
 import OpenAPIURLSession
 
-typealias AllStations = Components.Schemas.AllStationsResponse
-
 protocol AllStationsServiceProtocol {
   func getAllStations() async throws -> AllStations
 }
@@ -25,7 +23,7 @@ final class AllStationsService: AllStationsServiceProtocol {
         ))
         
         var fullData = Data()
-        for try await chunk in response.ok.body.html {
+        for try await chunk in try response.ok.body.html {
             fullData.append(contentsOf: chunk)
         }
         
@@ -45,7 +43,7 @@ func testFetchAllStations() {
             
             let service = AllStationsService(
                 client: client,
-                apikey: "ceea6351-f390-4784-8f66-7f6409f22768"
+                apikey: APIConfiguration.apiKey
             )
             
             print("> TEST testFetchAllStations")

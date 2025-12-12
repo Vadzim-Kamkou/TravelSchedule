@@ -1,8 +1,6 @@
 import OpenAPIRuntime
 import OpenAPIURLSession
 
-typealias CopyrightResponse = Components.Schemas.CopyrightResponse
-
 protocol CopyrightServiceProtocol {
     func getCopyright() async throws -> CopyrightResponse
 }
@@ -35,7 +33,7 @@ func testFetchCopyright() {
             
             let service = CopyrightService(
                 client: client,
-                apikey: "ceea6351-f390-4784-8f66-7f6409f22768"
+                apikey: APIConfiguration.apiKey
             )
             
             print("> TEST testFetchCopyright")

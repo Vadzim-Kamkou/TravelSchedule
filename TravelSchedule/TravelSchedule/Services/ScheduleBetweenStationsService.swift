@@ -1,8 +1,6 @@
 import OpenAPIRuntime
 import OpenAPIURLSession
 
-typealias ScheduleSegments = Components.Schemas.Segments
-
 protocol ScheduleBetweenStationsServiceProtocol {
   func getScheduleBetweenStations(
     from: String,
@@ -58,7 +56,7 @@ func testFetchScheduleBetweenStations() {
             
             let service = ScheduleBetweenStationsService(
                 client: client,
-                apikey: "ceea6351-f390-4784-8f66-7f6409f22768"
+                apikey: APIConfiguration.apiKey
             )
             
             print("> TEST testFetchScheduleBetweenStations")
