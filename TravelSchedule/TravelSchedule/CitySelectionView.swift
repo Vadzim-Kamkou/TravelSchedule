@@ -68,89 +68,11 @@ struct CitySelectionView: View {
     var body: some View {
         Group {
             if isLoading {
-                VStack(spacing: 16) {
-                    ProgressView()
-                        .scaleEffect(1.5)
-                    Text("loading_stations")
-                        .font(.system(size: 17))
-                        .foregroundColor(.appBlack)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.appWhite)
+                loadingView
             } else if let error = errorMessage, let type = errorType {
-                GeometryReader { geometry in
-                    VStack(spacing: 16) {
-                        Image(type.imageName)
-                            .resizable()
-                            .scaledToFit()
-                            .cornerRadius(70)
-                            .frame(width: 223, height: 223)
-                        
-                        Text(LocalizedStringKey(type.titleKey))
-                            .font(.system(size: 24))
-                            .fontWeight(.bold)
-                            .foregroundColor(.appBlack)
-                        
-                        if type == .other {
-                            Text(error)
-                                .font(.system(size: 17))
-                                .foregroundColor(.gray)
-                                .multilineTextAlignment(.center)
-                                .padding(.horizontal, 32)
-                        }
-                        
-                        Button("try_again") {
-                            errorMessage = nil
-                            errorType = nil
-                            loadAllStations()
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .padding(.top, 8)
-                    }
-                    .frame(width: geometry.size.width, height: geometry.size.height)
-                    .position(x: geometry.size.width / 2, y: geometry.size.height / 2 - 50)
-                }
+                errorView(type: type, message: error)
             } else {
-                VStack(spacing: 0) {
-                    SearchBar(
-                        text: $searchText,
-                        isFocused: $isSearchFocused
-                    )
-                    
-                    if displayedSettlements.isEmpty {
-                        VStack {
-                            Spacer()
-                            Text("city_not_found")
-                                .font(.system(size: 24))
-                                .fontWeight(.bold)
-                                .foregroundColor(.appBlack)
-                            Spacer()
-                        }
-                    } else {
-                        List {
-                            ForEach(displayedSettlements, id: \.codes?.yandex_code) { settlement in
-                                ZStack {
-                                    NavigationLink {
-                                        StationSelectionView(
-                                            selectedSettlement: settlement,
-                                            mode: mode,
-                                            onComplete: onComplete
-                                        )
-                                    } label: {
-                                        EmptyView()
-                                    }
-                                    .opacity(0)
-                                    CityRow(settlement: settlement)
-                                }
-                                .listRowSeparator(.hidden)
-                                .listRowBackground(Color.appWhite)
-                            }
-                        }
-                        .listStyle(.plain)
-                        .scrollContentBackground(.hidden)
-                        .scrollDismissesKeyboard(.interactively)
-                    }
-                }
+                contentView
             }
         }
         .background(Color.appWhite)
@@ -161,6 +83,97 @@ struct CitySelectionView: View {
                 prepareSettlements()
             } else {
                 loadAllStations()
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var loadingView: some View {
+        VStack(spacing: 16) {
+            ProgressView().scaleEffect(1.5)
+            Text("loading_stations")
+                .font(.system(size: 17))
+                .foregroundColor(.appBlack)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.appWhite)
+    }
+    
+    @ViewBuilder
+    private func errorView(type: NetworkErrorType, message: String) -> some View {
+        GeometryReader { geometry in
+            VStack(spacing: 16) {
+                Image(type.imageName)
+                    .resizable()
+                    .scaledToFit()
+                    .cornerRadius(70)
+                    .frame(width: 223, height: 223)
+                
+                Text(LocalizedStringKey(type.titleKey))
+                    .font(.system(size: 24))
+                    .fontWeight(.bold)
+                    .foregroundColor(.appBlack)
+                
+                if type == .other {
+                    Text(message)
+                        .font(.system(size: 17))
+                        .foregroundColor(.gray)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 32)
+                }
+                
+                Button("try_again") {
+                    errorMessage = nil
+                    errorType = nil
+                    loadAllStations()
+                }
+                .buttonStyle(.borderedProminent)
+                .padding(.top, 8)
+            }
+            .frame(width: geometry.size.width, height: geometry.size.height)
+            .position(x: geometry.size.width / 2, y: geometry.size.height / 2 - 50)
+        }
+    }
+    
+    @ViewBuilder
+    private var contentView: some View {
+        VStack(spacing: 0) {
+            SearchBar(
+                text: $searchText,
+                isFocused: $isSearchFocused
+            )
+            
+            if displayedSettlements.isEmpty {
+                VStack {
+                    Spacer()
+                    Text("city_not_found")
+                        .font(.system(size: 24))
+                        .fontWeight(.bold)
+                        .foregroundColor(.appBlack)
+                    Spacer()
+                }
+            } else {
+                List {
+                    ForEach(displayedSettlements, id: \.codes?.yandex_code) { settlement in
+                        ZStack {
+                            NavigationLink {
+                                StationSelectionView(
+                                    selectedSettlement: settlement,
+                                    mode: mode,
+                                    onComplete: onComplete
+                                )
+                            } label: { EmptyView() }
+                                .opacity(0)
+                            
+                            CityRow(settlement: settlement)
+                        }
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.appWhite)
+                    }
+                }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .scrollDismissesKeyboard(.interactively)
             }
         }
     }
@@ -199,7 +212,7 @@ struct CitySelectionView: View {
             }
         }
     }
-
+    
     private func prepareSettlements() {
         guard let allStations = allStationsData else { return }
         
@@ -214,42 +227,6 @@ struct CitySelectionView: View {
         }
         
         allSettlements = result
-    }
-}
-
-// MARK: - Search Bar
-struct SearchBar: View {
-    @Binding var text: String
-    @FocusState.Binding var isFocused: Bool
-    
-    var body: some View {
-        HStack(spacing: 8) {
-            Image(systemName: "magnifyingglass")
-                .foregroundColor(.gray)
-                .font(.system(size: 17))
-            
-            TextField("search_placeholder", text: $text)
-                .focused($isFocused)
-                .autocorrectionDisabled()
-                .textInputAutocapitalization(.never)
-            
-            if !text.isEmpty {
-                Button {
-                    text = ""
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
-                        .font(.system(size: 17))
-                }
-                .buttonStyle(.plain)
-            }
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
-        .background(Color.appLightGray)
-        .cornerRadius(16)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
     }
 }
 
