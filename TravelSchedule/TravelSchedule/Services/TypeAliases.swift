@@ -7,6 +7,7 @@ typealias Station = Components.Schemas.Station
 typealias ScheduleSegments = Components.Schemas.Segments
 typealias NearestStations = Components.Schemas.Stations
 typealias Segment = Components.Schemas.Segment
+typealias Carrier = Components.Schemas.Carrier
 
 typealias AllStations = Components.Schemas.AllStationsResponse
 typealias NearestCity = Components.Schemas.NearestCityResponse

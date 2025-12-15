@@ -97,8 +97,8 @@ struct ScheduleCardView: View {
         }
         .buttonStyle(.plain)
         .navigationDestination(isPresented: $showCarrierInfo) {
-            if let code = segment.carrierCode {
-                CarrierInfoView(carrierCode: code)
+            if let carrier = segment.carrier {
+                CarrierInfoView(carrier: carrier)
             }
         }
     }

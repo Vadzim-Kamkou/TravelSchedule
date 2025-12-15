@@ -3,6 +3,9 @@ import OpenAPIURLSession
 
 struct MainView: View {
     
+    @AppStorage("isDarkModeEnabled") private var isDarkModeEnabled = false
+
+    
     // MARK: - State Route
     @State private var departureSettlement: Settlement? = nil
     @State private var departureStation: Station? = nil
@@ -65,10 +68,11 @@ struct MainView: View {
                 ZStack {
                     Color("appWhite").ignoresSafeArea()
                     VStack(alignment: .leading, spacing: 2) {
-                        //TODO SETTINGS
-                        Text("Settings")
-                            .font(.system(size: 17, weight: .regular))
-                            .foregroundColor(.appBlack)
+                        SettingsView()
+                            .tabItem {
+                                Image(.tapBarSettingsIconPassive)
+                            }
+                            .tag(1)
                     }
                     .padding(.leading, 8)
                 }
@@ -139,6 +143,7 @@ struct MainView: View {
             .toolbarBackground(.visible, for: .navigationBar)
         }
         .tint(.appBlack)
+        .preferredColorScheme(isDarkModeEnabled ? .dark : .light)
         .onAppear {
             setupNavigationBarAppearance()
             loadAllStationsIfNeeded()
