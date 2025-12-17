@@ -1,0 +1,32 @@
+import SwiftUI
+
+struct StoryCardView: View {
+    let story: Story
+    let isViewed: Bool
+    let onTap: () -> Void
+    
+    var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            story.image
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 92, height: 140)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+            
+            VStack(alignment: .leading, spacing: 0) {
+                Text(story.cardTitle)
+            }
+            .font(.system(size: 12))
+            .foregroundColor(.appWhiteUniversal)
+            .padding(8)
+        }
+        .frame(width: 92, height: 140)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.appBlueUniversal, lineWidth: isViewed ? 4 : 0)
+        )
+        .onTapGesture {
+            onTap()
+        }
+    }
+}
