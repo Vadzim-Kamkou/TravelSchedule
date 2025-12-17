@@ -122,6 +122,23 @@
         }
       }
     },
+    "error_page_unreachable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Page Unreachable"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Не удалось загрузить страницу"
+          }
+        }
+      }
+    },
     "error_server_error" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -689,9 +706,6 @@
           }
         }
       }
-    },
-    "Не удалось загрузить страницу" : {
-
     }
   },
   "version" : "1.1"

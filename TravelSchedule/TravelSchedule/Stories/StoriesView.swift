@@ -20,14 +20,16 @@ struct StoriesView: View {
     private let stories: [Story]
     private let configuration: Configuration
     private var currentStory: Story { stories[currentIndex] }
-    private var currentStoryIndex: Int { Int(progress * CGFloat(stories.count)) }
-    @State private var progress: CGFloat = 0
+    @State private var progress: CGFloat
     @State private var timer: Timer.TimerPublisher
     @State private var cancellable: Cancellable?
     @State private var currentIndex: Int = 0
     
     @Binding var viewedStories: Set<Int>
     private let initialStoryIndex: Int
+    
+    @State private var storyStartTime: Date? = nil
+    private let minimumViewDuration: TimeInterval = 1.0
     
     init(
         initialStoryIndex: Int = 0,
@@ -36,10 +38,13 @@ struct StoriesView: View {
     ) {
         self.initialStoryIndex = initialStoryIndex
         self._viewedStories = viewedStories
+        
         self.stories = stories
+        _currentIndex = State(initialValue: initialStoryIndex)
+        _progress = State(initialValue: CGFloat(initialStoryIndex) / CGFloat(stories.count))
+        
         configuration = Configuration(storiesCount: stories.count)
         timer = Self.createTimer(configuration: configuration)
-        _currentIndex = State(initialValue: initialStoryIndex)
     }
     
     @Environment(\.dismiss) private var dismiss
@@ -52,8 +57,7 @@ struct StoriesView: View {
             StoryView(story: currentStory)
                 .overlay(
                     ZStack (alignment: .topTrailing) {
-                        ProgressBar(numberOfSections: stories.count, progress: progress)
-                            .padding(.init(top: 80, leading: 16, bottom: 12, trailing: 16))
+                        ProgressBar(numberOfSections: stories.count, progress: progress)                            .padding(.init(top: 80, leading: 16, bottom: 12, trailing: 16))
                         CloseButton(action: {
                             dismiss()
                         })
@@ -63,12 +67,13 @@ struct StoriesView: View {
                 )
         }
         .onAppear {
-            markAsViewed(currentIndex)
+            storyStartTime = Date()
             timer = Self.createTimer(configuration: configuration)
             cancellable = timer.connect()
         }
         .onDisappear {
             cancellable?.cancel()
+            markAsViewed(currentIndex)
         }
         .onReceive(timer) { _ in
             timerTick()
@@ -111,23 +116,21 @@ struct StoriesView: View {
     }
     
     private func timerTick() {
-        var nextProgress = progress + configuration.progressPerTick
+        let nextProgress = progress + configuration.progressPerTick
+        
         if nextProgress >= 1 {
             markAsViewed(currentIndex)
-            if currentIndex == stories.count - 1 {
-                dismiss()
-                return
-            } else {
-                nextProgress = 0
-                currentIndex = 0
-            }
+            dismiss()
+            return
         }
         
         let newIndex = Int(nextProgress * CGFloat(stories.count))
         if newIndex != currentIndex {
             markAsViewed(currentIndex)
             currentIndex = newIndex
+            storyStartTime = Date()
         }
+        
         progress = nextProgress
     }
     
@@ -140,10 +143,11 @@ struct StoriesView: View {
             dismiss()
             return
         }
-        currentIndex = currentIndex + 1 < storiesCount ? currentIndex + 1 : 0
+        currentIndex += 1
         withAnimation {
             progress = CGFloat(currentIndex) / CGFloat(storiesCount)
         }
+        storyStartTime = Date()
     }
     
     private func previousStory() {
@@ -154,14 +158,16 @@ struct StoriesView: View {
                 progress = 0.0
             }
             resetTimer()
+            storyStartTime = Date()
             return
         }
         
         markAsViewed(currentIndex)
-        currentIndex = currentIndex - 1 >= 0 ? currentIndex - 1 : storiesCount - 1
+        currentIndex -= 1
         withAnimation {
             progress = CGFloat(currentIndex) / CGFloat(storiesCount)
         }
+        storyStartTime = Date()
     }
     
     private func resetTimer() {
@@ -175,7 +181,10 @@ struct StoriesView: View {
     }
     
     private func markAsViewed(_ index: Int) {
-        viewedStories.insert(index)
+        if let startTime = storyStartTime,
+           Date().timeIntervalSince(startTime) >= minimumViewDuration {
+            viewedStories.insert(index)
+        }
     }
 }
 

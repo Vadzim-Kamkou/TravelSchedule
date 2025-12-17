@@ -21,9 +21,10 @@ struct StoryCardView: View {
             .padding(8)
         }
         .frame(width: 92, height: 140)
+        .opacity(isViewed ? 0.5 : 1.0)
         .overlay(
             RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.appBlueUniversal, lineWidth: isViewed ? 4 : 0)
+                .stroke(Color.appBlueUniversal, lineWidth: isViewed ? 0 : 4)
         )
         .onTapGesture {
             onTap()

@@ -19,7 +19,7 @@ struct UserAgreementView: View {
                 WebView(url: url)
             } else {
                 VStack(spacing: 16) {
-                    Text("Не удалось загрузить страницу")
+                    Text("error_page_unreachable")
                         .font(.system(size: 17))
                         .foregroundColor(Color("appBlack"))
                 }
