@@ -26,6 +26,10 @@ struct MainView: View {
     
     private let stories = Story.allStories
     
+    init() {
+        setupNavigationBarAppearance()
+    }
+    
     var body: some View {
         NavigationStack {
             TabView {
@@ -183,7 +187,9 @@ struct MainView: View {
             .font: UIFont.systemFont(ofSize: 17, weight: .semibold)
         ]
         
-        appearance.backButtonAppearance.normal.titlePositionAdjustment = UIOffset(horizontal: -1000, vertical: 0)
+        let backButtonAppearance = UIBarButtonItemAppearance()
+        backButtonAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.clear]
+        appearance.backButtonAppearance = backButtonAppearance
         
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().compactAppearance = appearance
