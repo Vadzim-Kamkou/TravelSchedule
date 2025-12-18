@@ -20,11 +20,11 @@ struct StoryView: View {
                 Text(story.title)
                     .font(.bold34)
                     .lineLimit(2)
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
                 Text(story.description)
                     .font(.regular20)
                     .lineLimit(3)
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 100)

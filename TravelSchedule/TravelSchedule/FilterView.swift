@@ -24,7 +24,7 @@ struct FilterView: View {
             VStack(alignment: .leading, spacing: 0) {
                 Text("filter_departure_time")
                     .font(.system(size: 24, weight: .bold))
-                    .foregroundColor(.appBlack)
+                    .foregroundStyle(.appBlack)
                     .padding(.top, 16)
                     .padding(.horizontal, 16)
                 
@@ -42,7 +42,7 @@ struct FilterView: View {
                 
                 Text("filter_show_transfers")
                     .font(.system(size: 24, weight: .bold))
-                    .foregroundColor(.appBlack)
+                    .foregroundStyle(.appBlack)
                     .padding(.top, 32)
                     .padding(.horizontal, 16)
                 
@@ -66,7 +66,7 @@ struct FilterView: View {
                     } label: {
                         Text("filter_apply")
                             .font(.system(size: 17, weight: .bold))
-                            .foregroundColor(.white)
+                            .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
                             .frame(height: 60)
                             .background(Color.appBlueUniversal)
@@ -120,7 +120,7 @@ struct TimeFilterRow: View {
             HStack {
                 Text(title)
                     .font(.system(size: 17))
-                    .foregroundColor(.appBlack)
+                    .foregroundStyle(.appBlack)
                 
                 Spacer()
                 
@@ -136,7 +136,7 @@ struct TimeFilterRow: View {
                     if isSelected {
                         Image(systemName: "checkmark")
                             .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(.appWhite)
+                            .foregroundStyle(.appWhite)
                     }
                 }
             }
@@ -157,7 +157,7 @@ struct TransferFilterRow: View {
             HStack {
                 Text(title)
                     .font(.system(size: 17))
-                    .foregroundColor(.appBlack)
+                    .foregroundStyle(.appBlack)
                 
                 Spacer()
                 

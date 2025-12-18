@@ -8,13 +8,13 @@ struct Story {
     let cardTitle: String
     
     static let allStories: [Story] = [
-            .story1,
-            .story2,
-            .story3,
-            .story4,
-            .story5
-        ]
-
+        .story1,
+        .story2,
+        .story3,
+        .story4,
+        .story5
+    ]
+    
     static let story1 = Story(
         backgroundColor: .appBlackUniversal,
         image: Image(ImageResource .story0),
@@ -22,7 +22,7 @@ struct Story {
         description: "Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text",
         cardTitle: "Text"
     )
-
+    
     static let story2 = Story(
         backgroundColor: .appBlackUniversal,
         image: Image(ImageResource .story1),
@@ -30,7 +30,7 @@ struct Story {
         description: "Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text",
         cardTitle: "Text"
     )
-
+    
     static let story3 = Story(
         backgroundColor: .appBlackUniversal,
         image: Image(ImageResource .story2),

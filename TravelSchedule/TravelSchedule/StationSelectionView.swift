@@ -40,7 +40,7 @@ struct StationSelectionView: View {
                     Text("station_not_found")
                         .font(.system(size: 24))
                         .fontWeight(.bold)
-                        .foregroundColor(.appBlack)
+                        .foregroundStyle(.appBlack)
                     Spacer()
                 }
                 
@@ -85,7 +85,7 @@ struct StationRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(station.title ?? "")
                     .font(.system(size: 17))
-                    .foregroundColor(.appBlack)
+                    .foregroundStyle(.appBlack)
             }
             Spacer()
         }

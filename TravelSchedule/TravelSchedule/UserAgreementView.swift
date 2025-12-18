@@ -21,7 +21,7 @@ struct UserAgreementView: View {
                 VStack(spacing: 16) {
                     Text("error_page_unreachable")
                         .font(.system(size: 17))
-                        .foregroundColor(Color("appBlack"))
+                        .foregroundStyle(Color("appBlack"))
                 }
             }        }
         .navigationTitle("settings_useragreement")

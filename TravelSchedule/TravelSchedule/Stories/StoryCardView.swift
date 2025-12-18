@@ -17,7 +17,7 @@ struct StoryCardView: View {
                 Text(story.cardTitle)
             }
             .font(.system(size: 12))
-            .foregroundColor(.appWhiteUniversal)
+            .foregroundStyle(.appWhiteUniversal)
             .padding(8)
         }
         .frame(width: 92, height: 140)

@@ -7,13 +7,13 @@ struct MainView: View {
     
     
     // MARK: - State Route
-    @State private var departureSettlement: Settlement? = nil
-    @State private var departureStation: Station? = nil
-    @State private var arrivalSettlement: Settlement? = nil
-    @State private var arrivalStation: Station? = nil
-    @State private var allStationsData: AllStations? = nil
+    @State private var departureSettlement: Settlement?
+    @State private var departureStation: Station?
+    @State private var arrivalSettlement: Settlement?
+    @State private var arrivalStation: Station?
+    @State private var allStationsData: AllStations?
     @State private var isLoadingStations = false
-    @State private var errorMessage: String? = nil
+    @State private var errorMessage: String?
     
     // MARK: - Navigation State
     @State private var showDepartureSelection = false
@@ -38,7 +38,7 @@ struct MainView: View {
                     
                     VStack(spacing: 0) {
                         
-                        ScrollView(.horizontal, showsIndicators: false) {
+                        ScrollView(.horizontal) {
                             LazyHStack(spacing: 12) {
                                 ForEach(Array(stories.enumerated()), id: \.offset) { index, story in
                                     StoryCardView(
@@ -52,6 +52,7 @@ struct MainView: View {
                             }
                             .padding(.horizontal, 16)
                         }
+                        .scrollIndicators(.hidden)
                         .frame(height: 188)
                         
                         RouteSelectionPanel(
@@ -100,7 +101,7 @@ struct MainView: View {
             .overlay(
                 Rectangle()
                     .frame(height: 0.5)
-                    .foregroundColor(.appBlackTransparent)
+                    .foregroundStyle(.appBlackTransparent)
                     .padding(.bottom, 49),
                 alignment: .bottom
             )
@@ -292,7 +293,7 @@ struct NetworkErrorView: View {
                     .frame(width: 223, height: 223)
                 Text("error_no_internet")
                     .font(.system(size: 24, weight: .bold))
-                    .foregroundColor(.appBlack)
+                    .foregroundStyle(.appBlack)
                 Button("try_again") {
                     onRetry()
                 }

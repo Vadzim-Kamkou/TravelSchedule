@@ -31,17 +31,17 @@ struct CarrierInfoView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     Text(carrier.title ?? "carrier_info_unknowncarrier")
                         .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(.appBlack)
+                        .foregroundStyle(.appBlack)
                         .multilineTextAlignment(.leading)
 
                     if let email = extractedEmail {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("carrier_info_email")
                                 .font(.system(size: 17, weight: .regular))
-                                .foregroundColor(.appBlack)
+                                .foregroundStyle(.appBlack)
                             Text(email)
                                 .font(.system(size: 12, weight: .regular))
-                                .foregroundColor(.appBlueUniversal)
+                                .foregroundStyle(.appBlueUniversal)
                         }
                     }
                     
@@ -49,11 +49,11 @@ struct CarrierInfoView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("carrier_info_phone")
                                 .font(.system(size: 17, weight: .regular))
-                                .foregroundColor(.appBlack)
+                                .foregroundStyle(.appBlack)
                             
                             Text(phone)
                                 .font(.system(size: 12, weight: .regular))
-                                .foregroundColor(.appBlueUniversal)
+                                .foregroundStyle(.appBlueUniversal)
                         }
                     }
                 }

@@ -70,7 +70,7 @@ struct RouteSelectionPanel: View {
                    } label: {
                        Text("search_button")
                            .font(.system(size: 17, weight: .semibold))
-                           .foregroundColor(.white)
+                           .foregroundStyle(.white)
                            .frame(width: 150, height: 60)
                            .background(Color.appBlueUniversal)
                            .cornerRadius(16)
@@ -102,7 +102,7 @@ struct RouteFieldView: View {
         HStack {
             Text(displayText)
                 .font(.system(size: 17, weight: .regular))
-                .foregroundColor(isSelected ? .appBlackUniversal : .appGrayUniversal.opacity(0.5))
+                .foregroundStyle(isSelected ? .appBlackUniversal : .appGrayUniversal.opacity(0.5))
                 .lineLimit(1)
             
             Spacer()
