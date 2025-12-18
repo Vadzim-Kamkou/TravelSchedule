@@ -5,6 +5,7 @@ struct ScheduleSegmentDisplay: Identifiable {
     let carrierName: String
     let carrierCode: Int?
     let carrierLogoURL: String?
+    let carrier: Components.Schemas.Carrier?
     let hasTransfers: Bool
     let departureDate: String
     let departureTime: String
@@ -14,6 +15,8 @@ struct ScheduleSegmentDisplay: Identifiable {
     init(segment: Components.Schemas.Segment, carrierLogoURL: String?) {
         self.carrierName = segment.thread?.carrier?.title ?? String(localized: "unknown_carrier")
         self.carrierCode = segment.thread?.carrier?.code
+        self.carrier = segment.thread?.carrier
+
 
         self.carrierLogoURL = carrierLogoURL
         self.hasTransfers = false
@@ -39,10 +42,11 @@ struct ScheduleSegmentDisplay: Identifiable {
         self.departureDate = Self.formatCurrentDate()
     }
     
-    init(carrierName: String, carrierCode: Int?, carrierLogoURL: String?, hasTransfers: Bool, departureDate: String, departureTime: String, arrivalTime: String, duration: String) {
+    init(carrierName: String, carrierCode: Int?, carrierLogoURL: String?, carrier: Components.Schemas.Carrier? = nil, hasTransfers: Bool, departureDate: String, departureTime: String, arrivalTime: String, duration: String) {
         self.carrierName = carrierName
         self.carrierCode = carrierCode
         self.carrierLogoURL = carrierLogoURL
+        self.carrier = carrier
         self.hasTransfers = hasTransfers
         self.departureDate = departureDate
         self.departureTime = departureTime

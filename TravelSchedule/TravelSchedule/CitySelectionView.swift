@@ -93,7 +93,7 @@ struct CitySelectionView: View {
             ProgressView().scaleEffect(1.5)
             Text("loading_stations")
                 .font(.system(size: 17))
-                .foregroundColor(.appBlack)
+                .foregroundStyle(.appBlack)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.appWhite)
@@ -112,12 +112,12 @@ struct CitySelectionView: View {
                 Text(LocalizedStringKey(type.titleKey))
                     .font(.system(size: 24))
                     .fontWeight(.bold)
-                    .foregroundColor(.appBlack)
+                    .foregroundStyle(.appBlack)
                 
                 if type == .other {
                     Text(message)
                         .font(.system(size: 17))
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 32)
                 }
@@ -149,7 +149,7 @@ struct CitySelectionView: View {
                     Text("city_not_found")
                         .font(.system(size: 24))
                         .fontWeight(.bold)
-                        .foregroundColor(.appBlack)
+                        .foregroundStyle(.appBlack)
                     Spacer()
                 }
             } else {
@@ -238,11 +238,11 @@ struct CityRow: View {
         HStack {
             Text(settlement.title ?? "")
                 .font(.system(size: 17))
-                .foregroundColor(.appBlack)
+                .foregroundStyle(.appBlack)
             Spacer()
             Image(systemName: "chevron.right")
                 .font(.system(size: 20) .bold())
-                .foregroundColor(.appBlack)
+                .foregroundStyle(.appBlack)
         }
         .contentShape(Rectangle())
         .background(Color.appWhite)

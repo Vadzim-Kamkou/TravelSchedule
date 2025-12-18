@@ -40,13 +40,13 @@ struct ScheduleCardView: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(segment.carrierName)
                                 .font(.system(size: 17, weight: .regular))
-                                .foregroundColor(.appBlackUniversal)
+                                .foregroundStyle(.appBlackUniversal)
                                 .lineLimit(1)
                             
                             if segment.hasTransfers {
                                 Text("with_transfer")
                                     .font(.system(size: 12, weight: .regular))
-                                    .foregroundColor(.red)
+                                    .foregroundStyle(.red)
                             }
                         }
                         .padding(.leading, 8)
@@ -55,14 +55,14 @@ struct ScheduleCardView: View {
                         
                         Text(segment.departureDate)
                             .font(.system(size: 12, weight: .regular))
-                            .foregroundColor(.appBlackUniversal)
+                            .foregroundStyle(.appBlackUniversal)
                     }
                     .frame(height: 38)
                     
                     HStack(spacing: 0) {
                         Text(segment.departureTime)
                             .font(.system(size: 17, weight: .regular))
-                            .foregroundColor(.appBlackUniversal)
+                            .foregroundStyle(.appBlackUniversal)
                             .fixedSize()
                         
                         Rectangle()
@@ -72,7 +72,7 @@ struct ScheduleCardView: View {
                         
                         Text(segment.duration)
                             .font(.system(size: 12, weight: .regular))
-                            .foregroundColor(.appBlackUniversal)
+                            .foregroundStyle(.appBlackUniversal)
                             .fixedSize()
                         
                         Rectangle()
@@ -82,7 +82,7 @@ struct ScheduleCardView: View {
                         
                         Text(segment.arrivalTime)
                             .font(.system(size: 17, weight: .regular))
-                            .foregroundColor(.appBlackUniversal)
+                            .foregroundStyle(.appBlackUniversal)
                             .fixedSize()
                     }
                     .frame(height: 48)
@@ -97,8 +97,8 @@ struct ScheduleCardView: View {
         }
         .buttonStyle(.plain)
         .navigationDestination(isPresented: $showCarrierInfo) {
-            if let code = segment.carrierCode {
-                CarrierInfoView(carrierCode: code)
+            if let carrier = segment.carrier {
+                CarrierInfoView(carrier: carrier)
             }
         }
     }
@@ -113,7 +113,7 @@ struct CarrierPlaceholder: View {
             
             Image(systemName: "airplane")
                 .font(.system(size: 20))
-                .foregroundColor(.appGrayUniversal)
+                .foregroundStyle(.appGrayUniversal)
         }
     }
 }

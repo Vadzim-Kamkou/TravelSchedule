@@ -28,7 +28,7 @@ struct ScheduleListView: View {
                         .scaleEffect(1.5)
                     Text("loading_schedule")
                         .font(.system(size: 17))
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.appWhite)
@@ -46,7 +46,7 @@ struct ScheduleListView: View {
                         Text("error_server_error")
                             .font(.system(size: 24))
                             .fontWeight(.bold)
-                            .foregroundColor(.appBlack)
+                            .foregroundStyle(.appBlack)
                         
                         Spacer()
                     }
@@ -58,7 +58,7 @@ struct ScheduleListView: View {
                 VStack {
                     Text(routeTitle)
                         .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(.appBlack)
+                        .foregroundStyle(.appBlack)
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 16)
@@ -68,7 +68,7 @@ struct ScheduleListView: View {
                     Text("no_options")
                         .font(.system(size: 24))
                         .fontWeight(.bold)
-                        .foregroundColor(.appBlack)
+                        .foregroundStyle(.appBlack)
                     if viewModel.filterSettings.hasActiveFilters {
                         // ?Кнопка уточнить время
                     }
@@ -80,7 +80,7 @@ struct ScheduleListView: View {
                 VStack(spacing: 0) {
                     Text(routeTitle)
                         .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(.appBlack)
+                        .foregroundStyle(.appBlack)
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 16)
@@ -118,7 +118,7 @@ struct ScheduleListView: View {
                                     .frame(width: 8, height: 8)
                             }
                         }
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .frame(height: 60)
                         .background(Color.appBlueUniversal)

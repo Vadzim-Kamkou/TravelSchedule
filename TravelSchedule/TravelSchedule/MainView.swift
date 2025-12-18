@@ -3,21 +3,32 @@ import OpenAPIURLSession
 
 struct MainView: View {
     
+    @AppStorage("isDarkModeEnabled") private var isDarkModeEnabled = false
+    
+    
     // MARK: - State Route
-    @State private var departureSettlement: Settlement? = nil
-    @State private var departureStation: Station? = nil
-    @State private var arrivalSettlement: Settlement? = nil
-    @State private var arrivalStation: Station? = nil
-    @State private var allStationsData: AllStations? = nil
+    @State private var departureSettlement: Settlement?
+    @State private var departureStation: Station?
+    @State private var arrivalSettlement: Settlement?
+    @State private var arrivalStation: Station?
+    @State private var allStationsData: AllStations?
     @State private var isLoadingStations = false
-    @State private var errorMessage: String? = nil
+    @State private var errorMessage: String?
     
     // MARK: - Navigation State
     @State private var showDepartureSelection = false
     @State private var showArrivalSelection = false
     @State private var showScheduleList = false
     @State private var showNetworkError = false
+    @State private var showStories = false
+    @State private var selectedStoryIndex = 0
+    @State private var viewedStories: Set<Int> = []
     
+    private let stories = Story.allStories
+    
+    init() {
+        setupNavigationBarAppearance()
+    }
     
     var body: some View {
         NavigationStack {
@@ -27,14 +38,21 @@ struct MainView: View {
                     
                     VStack(spacing: 0) {
                         
-                        ScrollView(.horizontal, showsIndicators: false) {
+                        ScrollView(.horizontal) {
                             LazyHStack(spacing: 12) {
-                                ForEach(0..<5) { index in
-                                    StoryCardView(index: index)
+                                ForEach(Array(stories.enumerated()), id: \.offset) { index, story in
+                                    StoryCardView(
+                                        story: story,
+                                        isViewed: viewedStories.contains(index)
+                                    ) {
+                                        selectedStoryIndex = index
+                                        showStories = true
+                                    }
                                 }
                             }
                             .padding(.horizontal, 16)
                         }
+                        .scrollIndicators(.hidden)
                         .frame(height: 188)
                         
                         RouteSelectionPanel(
@@ -65,10 +83,11 @@ struct MainView: View {
                 ZStack {
                     Color("appWhite").ignoresSafeArea()
                     VStack(alignment: .leading, spacing: 2) {
-                        //TODO SETTINGS
-                        Text("Settings")
-                            .font(.system(size: 17, weight: .regular))
-                            .foregroundColor(.appBlack)
+                        SettingsView()
+                            .tabItem {
+                                Image(.tapBarSettingsIconPassive)
+                            }
+                            .tag(1)
                     }
                     .padding(.leading, 8)
                 }
@@ -78,11 +97,11 @@ struct MainView: View {
                 .tag(1)
             }
             .tint(.appBlack)
-
+            
             .overlay(
                 Rectangle()
                     .frame(height: 0.5)
-                    .foregroundColor(.appBlackTransparent)
+                    .foregroundStyle(.appBlackTransparent)
                     .padding(.bottom, 49),
                 alignment: .bottom
             )
@@ -139,36 +158,46 @@ struct MainView: View {
             .toolbarBackground(.visible, for: .navigationBar)
         }
         .tint(.appBlack)
-        .onAppear {
-            setupNavigationBarAppearance()
-            loadAllStationsIfNeeded()
+        .preferredColorScheme(isDarkModeEnabled ? .dark : .light)
+        .fullScreenCover(isPresented: $showStories) {
+            StoriesView(
+                initialStoryIndex: selectedStoryIndex,
+                viewedStories: $viewedStories,
+            )
+            .interactiveDismissDisabled(true)
+            .onAppear {
+                setupNavigationBarAppearance()
+                loadAllStationsIfNeeded()
+            }
         }
     }
     
     private func setupNavigationBarAppearance() {
-            let appearance = UINavigationBarAppearance()
-            appearance.configureWithOpaqueBackground()
-            
-            if let backgroundColor = UIColor(named: "appWhite") {
-                appearance.backgroundColor = backgroundColor
-            }
-            
-            appearance.shadowColor = .clear
-            appearance.shadowImage = UIImage()
-            
-            appearance.titleTextAttributes = [
-                .foregroundColor: UIColor(named: "appBlack") ?? UIColor.label,
-                .font: UIFont.systemFont(ofSize: 17, weight: .semibold)
-            ]
-            
-            appearance.backButtonAppearance.normal.titlePositionAdjustment = UIOffset(horizontal: -1000, vertical: 0)
-            
-            UINavigationBar.appearance().standardAppearance = appearance
-            UINavigationBar.appearance().compactAppearance = appearance
-            UINavigationBar.appearance().scrollEdgeAppearance = appearance
-            UINavigationBar.appearance().compactScrollEdgeAppearance = appearance
-            UINavigationBar.appearance().tintColor = UIColor(named: "appBlack")
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        
+        if let backgroundColor = UIColor(named: "appWhite") {
+            appearance.backgroundColor = backgroundColor
         }
+        
+        appearance.shadowColor = .clear
+        appearance.shadowImage = UIImage()
+        
+        appearance.titleTextAttributes = [
+            .foregroundColor: UIColor(named: "appBlack") ?? UIColor.label,
+            .font: UIFont.systemFont(ofSize: 17, weight: .semibold)
+        ]
+        
+        let backButtonAppearance = UIBarButtonItemAppearance()
+        backButtonAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.clear]
+        appearance.backButtonAppearance = backButtonAppearance
+        
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().compactAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        UINavigationBar.appearance().compactScrollEdgeAppearance = appearance
+        UINavigationBar.appearance().tintColor = UIColor(named: "appBlack")
+    }
     
     private func loadAllStationsIfNeeded() {
         guard allStationsData == nil else { return }
@@ -204,27 +233,8 @@ struct MainView: View {
     }
 }
 
-struct StoryCardView: View {
-    let index: Int
-    
-    var body: some View {
-        ZStack(alignment: .bottomLeading) {
-            Image("story\(index)")
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 92, height: 140)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-            
-            VStack(alignment: .leading, spacing: 0) {
-                Text("stories_text")
-            }
-            .font(.system(size: 12))
-            .foregroundColor(.appWhiteUniversal)
-            .padding(8)
-        }
-        .frame(width: 92, height: 140)
-    }
-}
+
+
 
 func testAllServices() {
     Task {
@@ -283,7 +293,7 @@ struct NetworkErrorView: View {
                     .frame(width: 223, height: 223)
                 Text("error_no_internet")
                     .font(.system(size: 24, weight: .bold))
-                    .foregroundColor(.appBlack)
+                    .foregroundStyle(.appBlack)
                 Button("try_again") {
                     onRetry()
                 }
