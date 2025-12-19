@@ -1,8 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @AppStorage("isDarkModeEnabled") private var isDarkModeEnabled = false
-    @State private var showUserAgreement = false
+    @State private var viewModel = SettingsViewModel()
     
     var body: some View {
         ZStack {
@@ -17,14 +16,17 @@ struct SettingsView: View {
                     
                     Spacer()
                     
-                    Toggle("", isOn: $isDarkModeEnabled)
-                        .labelsHidden()
+                    Toggle("", isOn: Binding(
+                        get: { viewModel.isDarkModeEnabled },
+                        set: { viewModel.isDarkModeEnabled = $0 }
+                    ))
+                    .labelsHidden()
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 16)
                 
                 Button(action: {
-                    showUserAgreement = true
+                    viewModel.openUserAgreement()
                 }) {
                     HStack {
                         Text("settings_useragreement")
@@ -34,7 +36,7 @@ struct SettingsView: View {
                         Spacer()
                         
                         Image(systemName: "chevron.right")
-                            .font(.system(size: 20) .bold())
+                            .font(.system(size: 20).bold())
                             .foregroundStyle(.appBlack)
                     }
                     .padding(.horizontal, 16)
@@ -46,8 +48,8 @@ struct SettingsView: View {
                 Spacer()
                 
                 VStack(spacing: 16) {
-                    Text("settings_info_API")
-                    Text("settings_info_version")
+                    Text(viewModel.apiInfo)
+                    Text("Версия \(viewModel.appVersion)")
                 }
                 .font(.system(size: 12))
                 .foregroundStyle(Color("appBlack"))
@@ -55,7 +57,7 @@ struct SettingsView: View {
             }
         }
         .padding(.top, 64)
-        .navigationDestination(isPresented: $showUserAgreement) {
+        .navigationDestination(isPresented: $viewModel.showUserAgreement) {
             UserAgreementView()
         }
     }
