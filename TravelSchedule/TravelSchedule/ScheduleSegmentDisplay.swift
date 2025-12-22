@@ -16,8 +16,8 @@ struct ScheduleSegmentDisplay: Identifiable {
         self.carrierName = segment.thread?.carrier?.title ?? String(localized: "unknown_carrier")
         self.carrierCode = segment.thread?.carrier?.code
         self.carrier = segment.thread?.carrier
-
-
+        
+        
         self.carrierLogoURL = carrierLogoURL
         self.hasTransfers = false
         

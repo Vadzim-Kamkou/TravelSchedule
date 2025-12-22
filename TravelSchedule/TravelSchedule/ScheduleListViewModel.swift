@@ -14,9 +14,6 @@ class ScheduleListViewModel: ObservableObject {
     private let scheduleService: ScheduleBetweenStationsService
     private let carrierService: CarrierInfoService
     
-//    private let client: Client
-//    private let apiKey: String
-    
     var segments: [ScheduleSegmentDisplay] {
         filteredSegments
     }

@@ -2,7 +2,14 @@
   "sourceLanguage" : "en",
   "strings" : {
     "" : {
-
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
     },
     "carrier_info" : {
       "extractionState" : "manual",
@@ -133,7 +140,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Не удалось загрузить страницу"
           }
         }
@@ -531,7 +538,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Приложение использует API «Яндекс.Расписания»"
           }
         }
@@ -548,7 +555,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Версия 1.0 (beta)"
           }
         }
@@ -565,7 +572,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Пользовательское соглашение"
           }
         }
@@ -706,9 +713,6 @@
           }
         }
       }
-    },
-    "Версия %@" : {
-
     }
   },
   "version" : "1.1"

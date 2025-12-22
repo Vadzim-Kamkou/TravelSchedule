@@ -8,25 +8,6 @@ struct MainView: View {
     
     @StateObject private var viewModel = MainViewModel()
     
-    
-//    // MARK: - State Route
-//    viewModel.departureSettlement
-//    viewModel.departureStation
-//    viewModel.arrivalSettlement
-//    viewModel.arrivalStation
-//    viewModel.allStationsData
-//    viewModel.isLoadingStations = false
-//    viewModel.errorMessage
-//    
-//    // MARK: - Navigation State
-//    @State private var showDepartureSelection = false
-//    @State private var showArrivalSelection = false
-//    @State private var showScheduleList = false
-//    @State private var showNetworkError = false
-//    @State private var showStories = false
-//    @State private var selectedStoryIndex = 0
-//    @State private var viewedStories: Set<Int> = []
-    
     private let stories = Story.allStories
     
     init() {
@@ -178,7 +159,6 @@ struct MainView: View {
             setupNavigationBarAppearance()
         }
     }
-
     
     private func setupNavigationBarAppearance() {
         let appearance = UINavigationBarAppearance()
@@ -205,82 +185,6 @@ struct MainView: View {
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
         UINavigationBar.appearance().compactScrollEdgeAppearance = appearance
         UINavigationBar.appearance().tintColor = UIColor(named: "appBlack")
-    }
-    
-//    private func loadAllStationsIfNeeded() {
-//        guard allStationsData == nil else { return }
-//        
-//        Task {
-//            do {
-//                let client = Client(
-//                    serverURL: try Servers.Server1.url(),
-//                    transport: URLSessionTransport()
-//                )
-//                
-//                let service = AllStationsService(
-//                    client: client,
-//                    apikey: APIConfiguration.apiKey
-//                )
-//                
-//                let stations = try await service.getAllStations()
-//                
-//                await MainActor.run {
-//                    allStationsData = stations
-//                    errorMessage = nil
-//                    showNetworkError = false
-//                }
-//            } catch {
-//                await MainActor.run {
-//                    errorMessage = error.localizedDescription
-//                    showNetworkError = true
-//                    
-//                }
-//                print("Error loading stations: \(error)")
-//            }
-//        }
-//    }
-}
-
-
-
-
-func testAllServices() {
-    Task {
-        print("All Service Tests...\n")
-        
-        print("1. Test Copyright Service")
-        testFetchCopyright()
-        try? await Task.sleep(for: .seconds(2))
-        
-        print("\n2. Test All Stations Service")
-        testFetchAllStations()
-        try? await Task.sleep(for: .seconds(3))
-        
-        print("\n3. Test Nearest City Service")
-        testFetchNearestCity()
-        try? await Task.sleep(for: .seconds(2))
-        
-        print("\n4. Test Nearest Stations Service")
-        testFetchStations()
-        try? await Task.sleep(for: .seconds(2))
-        
-        print("\n5. Test Station Schedule Service")
-        testFetchStationSchedule()
-        try? await Task.sleep(for: .seconds(2))
-        
-        print("\n6. Test Schedule Between Stations Service")
-        testFetchScheduleBetweenStations()
-        try? await Task.sleep(for: .seconds(2))
-        
-        print("\n7. Test Route Stations Service")
-        testFetchRouteStations()
-        try? await Task.sleep(for: .seconds(2))
-        
-        print("\n8. Test Carrier Info Service")
-        testFetchCarrierInfo()
-        try? await Task.sleep(for: .seconds(2))
-        
-        print("\nAll test finished!")
     }
 }
 

@@ -49,7 +49,7 @@ struct SettingsView: View {
                 
                 VStack(spacing: 16) {
                     Text(viewModel.apiInfo)
-                    Text("Версия \(viewModel.appVersion)")
+                    Text(viewModel.appVersion)
                 }
                 .font(.system(size: 12))
                 .foregroundStyle(Color("appBlack"))

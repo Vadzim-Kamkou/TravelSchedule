@@ -70,12 +70,11 @@ struct ScheduleListView: View {
                         .fontWeight(.bold)
                         .foregroundStyle(.appBlack)
                     if viewModel.filterSettings.hasActiveFilters {
-                        // ?Кнопка уточнить время
                     }
                     Spacer()
                 }
                 .background(Color.appWhite)
-
+                
             } else {
                 VStack(spacing: 0) {
                     Text(routeTitle)
@@ -101,7 +100,7 @@ struct ScheduleListView: View {
                     Spacer()
                 }
                 .background(Color.appWhite)
-
+                
                 VStack {
                     Spacer()
                     

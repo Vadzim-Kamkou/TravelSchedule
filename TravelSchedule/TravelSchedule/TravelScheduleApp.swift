@@ -4,8 +4,7 @@ import SwiftUI
 struct TravelScheduleApp: App {
     var body: some Scene {
         WindowGroup {
-            //SplashScreen()
-            MainView()
+            SplashScreen()
         }
     }
 }

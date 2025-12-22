@@ -34,7 +34,6 @@ struct FilterSettings: Equatable {
         return false
     }
     
-    // Проверяет, соответствует ли рейс фильтру пересадок
     func matchesTransferFilter(_ hasTransfers: Bool) -> Bool {
         switch showTransfers {
         case .yes:
@@ -44,7 +43,6 @@ struct FilterSettings: Equatable {
         }
     }
     
-    // Проверяет, соответствует ли сегмент всем активным фильтрам
     func matches(segment: ScheduleSegmentDisplay) -> Bool {
         let timeMatch = matchesTimeFilter(segment.departureTime)
         let transferMatch = matchesTransferFilter(segment.hasTransfers)

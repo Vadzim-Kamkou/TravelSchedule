@@ -5,7 +5,7 @@ import Combine
 struct StationSelectionView: View {
     
     @StateObject private var viewModel: StationSelectionViewModel
-
+    
     init(selectedSettlement: Settlement, mode: SelectionMode, onComplete: @escaping (Settlement, Station) -> Void) {
         self.mode = mode
         self.onComplete = onComplete
@@ -20,7 +20,7 @@ struct StationSelectionView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-
+            
             SearchBar(
                 text: $viewModel.searchText,
                 isFocused: $isSearchFocused

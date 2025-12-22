@@ -13,11 +13,11 @@ class SettingsViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     var appVersion: String {
-        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
+        String(localized: "settings_info_version")
     }
     
     var apiInfo: String {
-        "Версия API Яндекс.Расписаний 3.0"
+        String(localized: "settings_info_API")
     }
     
     init() {

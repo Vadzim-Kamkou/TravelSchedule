@@ -4,7 +4,7 @@ struct FilterView: View {
     @Environment(\.dismiss) private var dismiss
     
     @Binding var filterSettings: FilterSettings
-
+    
     @State private var selectedTimes: Set<DepartureTime> = []
     @State private var showTransfers: TransferOption = .yes
     
@@ -81,7 +81,7 @@ struct FilterView: View {
         .navigationBarTitleDisplayMode(.inline)
         .animation(.easeInOut(duration: 0.25), value: hasChanges)
     }
-        
+    
     private func toggleTime(_ time: DepartureTime) {
         if selectedTimes.contains(time) {
             selectedTimes.remove(time)
