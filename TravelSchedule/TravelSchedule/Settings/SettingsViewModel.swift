@@ -1,0 +1,49 @@
+import SwiftUI
+import Combine
+
+@MainActor
+class SettingsViewModel: ObservableObject {
+    @Published var isDarkModeEnabled: Bool {
+        didSet {
+            UserDefaultsService.shared.setBool(isDarkModeEnabled, forKey: UserDefaultsService.Keys.isDarkModeEnabled)
+        }
+    }
+    
+    @Published var showUserAgreement: Bool = false
+    private var cancellables = Set<AnyCancellable>()
+    
+    var appVersion: String {
+        String(localized: "settings_info_version")
+    }
+    
+    var apiInfo: String {
+        String(localized: "settings_info_API")
+    }
+    
+    init() {
+        self.isDarkModeEnabled = UserDefaultsService.shared.getBool(
+            forKey: UserDefaultsService.Keys.isDarkModeEnabled,
+            defaultValue: false
+        )
+        setupUserDefaultsObserver()
+    }
+    
+    func openUserAgreement() {
+        showUserAgreement = true
+    }
+    
+    func closeUserAgreement() {
+        showUserAgreement = false
+    }
+    
+    private func setupUserDefaultsObserver() {
+        UserDefaultsService.shared.boolPublisher(forKey: UserDefaultsService.Keys.isDarkModeEnabled)
+            .sink { [weak self] newValue in
+                guard let self = self else { return }
+                if self.isDarkModeEnabled != newValue {
+                    self.isDarkModeEnabled = newValue
+                }
+            }
+            .store(in: &cancellables)
+    }
+}

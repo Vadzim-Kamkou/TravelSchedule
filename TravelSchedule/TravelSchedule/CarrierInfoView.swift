@@ -7,7 +7,7 @@ struct CarrierInfoView: View {
     var body: some View {
         ZStack {
             Color.appWhite.ignoresSafeArea()
-
+            
             VStack(spacing: 16) {
                 if let logoURL = carrier.logo,
                    let url = URL(string: logoURL) {
@@ -33,7 +33,7 @@ struct CarrierInfoView: View {
                         .font(.system(size: 24, weight: .bold))
                         .foregroundStyle(.appBlack)
                         .multilineTextAlignment(.leading)
-
+                    
                     if let email = extractedEmail {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("carrier_info_email")

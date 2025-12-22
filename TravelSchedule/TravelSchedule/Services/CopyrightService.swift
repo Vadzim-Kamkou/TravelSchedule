@@ -5,7 +5,7 @@ protocol CopyrightServiceProtocol {
     func getCopyright() async throws -> CopyrightResponse
 }
 
-final class CopyrightService: CopyrightServiceProtocol {
+actor CopyrightService: CopyrightServiceProtocol {
     private let client: Client
     private let apikey: String
     
@@ -18,35 +18,6 @@ final class CopyrightService: CopyrightServiceProtocol {
         let response = try await client.getCopyright(query: .init(
             apikey: apikey
         ))
-        return try response.ok.body.json
-    }
-}
-
-// Test function
-func testFetchCopyright() {
-    Task {
-        do {
-            let client = Client(
-                serverURL: try Servers.Server1.url(),
-                transport: URLSessionTransport()
-            )
-            
-            let service = CopyrightService(
-                client: client,
-                apikey: APIConfiguration.apiKey
-            )
-            
-            print("> TEST testFetchCopyright")
-            let copyright = try await service.getCopyright()
-            
-            print("SUCCESSFULLY fetched copyright: \(copyright)")
-            
-            if let copyrightData = copyright.copyright {
-                print("Copyright text: \(copyrightData.text ?? "N/A")")
-                print("URL: \(copyrightData.url ?? "N/A")")
-            }
-        } catch {
-            print("Error fetching copyright: \(error)")
-        }
+        return try await response.ok.body.json
     }
 }

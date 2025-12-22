@@ -1,13 +1,13 @@
 import SwiftUI
 
 struct RouteSelectionPanel: View {
-
+    
     @Binding var departureSettlement: Settlement?
     @Binding var departureStation: Station?
     @Binding var arrivalSettlement: Settlement?
     @Binding var arrivalStation: Station?
     
-
+    
     var onDepartureFieldTap: () -> Void
     var onArrivalFieldTap: () -> Void
     var onSearchTap: () -> Void
@@ -17,70 +17,70 @@ struct RouteSelectionPanel: View {
     }
     
     var body: some View {
-           VStack(spacing: 16) {
-
-               ZStack(alignment: .trailing) {
-
-                   VStack(spacing: 0) {
-
-                       RouteFieldView(
-                            placeholder: String(localized: "from_placeholder"),
-                            selectedSettlement: departureSettlement,
-                            selectedStation: departureStation
-                       )
-                       .contentShape(Rectangle())
-                       .onTapGesture {
-                           onDepartureFieldTap()
-                       }
-                       
-  
-                       RouteFieldView(
-                            placeholder: String(localized: "to_placeholder"),
-                            selectedSettlement: arrivalSettlement,
-                            selectedStation: arrivalStation
-                       )
-                       .contentShape(Rectangle())
-                       .onTapGesture {
-                           onArrivalFieldTap()
-                       }
-                   }
-                   .background(Color.appWhiteUniversal)
-                   .cornerRadius(16)
-                   .padding(.leading, 16)
-                   .padding(.trailing, 16+36+16)
-                   .padding(.top, 16)
-                   .padding(.bottom, 16)
-                   
-                   Spacer()
-                   
-                   SwapButton {
-                       withAnimation(.easeInOut(duration: 0.3)) {
-                           swap(&departureSettlement, &arrivalSettlement)
-                           swap(&departureStation, &arrivalStation)
-                       }
-                   }
-                   .padding(.trailing, 16)
-               }
-               .background(Color.appBlueUniversal)
-               .cornerRadius(20)
-               
-               if bothStationsSelected {
-                   Button {
-                       onSearchTap()
-                   } label: {
-                       Text("search_button")
-                           .font(.system(size: 17, weight: .semibold))
-                           .foregroundStyle(.white)
-                           .frame(width: 150, height: 60)
-                           .background(Color.appBlueUniversal)
-                           .cornerRadius(16)
-                   }
-                   .transition(.move(edge: .top).combined(with: .opacity))
-               }
-           }
-           .padding(.horizontal, 16) 
-       }
-   }
+        VStack(spacing: 16) {
+            
+            ZStack(alignment: .trailing) {
+                
+                VStack(spacing: 0) {
+                    
+                    RouteFieldView(
+                        placeholder: String(localized: "from_placeholder"),
+                        selectedSettlement: departureSettlement,
+                        selectedStation: departureStation
+                    )
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        onDepartureFieldTap()
+                    }
+                    
+                    
+                    RouteFieldView(
+                        placeholder: String(localized: "to_placeholder"),
+                        selectedSettlement: arrivalSettlement,
+                        selectedStation: arrivalStation
+                    )
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        onArrivalFieldTap()
+                    }
+                }
+                .background(Color.appWhiteUniversal)
+                .cornerRadius(16)
+                .padding(.leading, 16)
+                .padding(.trailing, 16+36+16)
+                .padding(.top, 16)
+                .padding(.bottom, 16)
+                
+                Spacer()
+                
+                SwapButton {
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        swap(&departureSettlement, &arrivalSettlement)
+                        swap(&departureStation, &arrivalStation)
+                    }
+                }
+                .padding(.trailing, 16)
+            }
+            .background(Color.appBlueUniversal)
+            .cornerRadius(20)
+            
+            if bothStationsSelected {
+                Button {
+                    onSearchTap()
+                } label: {
+                    Text("search_button")
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 150, height: 60)
+                        .background(Color.appBlueUniversal)
+                        .cornerRadius(16)
+                }
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
+        .padding(.horizontal, 16) 
+    }
+}
 
 struct RouteFieldView: View {
     let placeholder: String

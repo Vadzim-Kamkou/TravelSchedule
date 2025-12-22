@@ -66,17 +66,17 @@ func determineErrorType(_ error: Error) -> NetworkErrorType {
     if nsError.domain == NSURLErrorDomain {
         switch nsError.code {
         case NSURLErrorNotConnectedToInternet,  // -1009
-             NSURLErrorNetworkConnectionLost,    // -1005
-             NSURLErrorDataNotAllowed:           // -1020
+            NSURLErrorNetworkConnectionLost,    // -1005
+            NSURLErrorDataNotAllowed:           // -1020
             return .noInternet
             
         case NSURLErrorTimedOut:  // -1001
             return .timeout
             
         case NSURLErrorBadServerResponse,  // -1011
-             NSURLErrorCannotFindHost,     // -1003
-             NSURLErrorCannotConnectToHost, // -1004
-             NSURLErrorDNSLookupFailed:     // -1006
+            NSURLErrorCannotFindHost,     // -1003
+            NSURLErrorCannotConnectToHost, // -1004
+            NSURLErrorDNSLookupFailed:     // -1006
             return .serverError
             
         default:
