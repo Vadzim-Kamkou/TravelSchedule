@@ -1,39 +1,32 @@
 import SwiftUI
+import Combine
 
 // MARK: - Station Selection View
 struct StationSelectionView: View {
-    let selectedSettlement: Settlement
+    
+    @StateObject private var viewModel: StationSelectionViewModel
+
+    init(selectedSettlement: Settlement, mode: SelectionMode, onComplete: @escaping (Settlement, Station) -> Void) {
+        self.mode = mode
+        self.onComplete = onComplete
+        _viewModel = StateObject(wrappedValue: StationSelectionViewModel(selectedSettlement: selectedSettlement))
+    }
+    
     let mode: SelectionMode
     let onComplete: (Settlement, Station) -> Void
     
-    @State private var searchText: String = ""
     @FocusState private var isSearchFocused: Bool
     @Environment(\.dismiss) private var dismiss
-    
-    private var allStations: [Station] {
-        selectedSettlement.stations ?? []
-    }
-    
-    private var displayedStations: [Station] {
-        if searchText.isEmpty {
-            return allStations
-        } else {
-            return allStations.filter { station in
-                guard let title = station.title else { return false }
-                return title.lowercased().hasPrefix(searchText.lowercased())
-            }
-        }
-    }
     
     var body: some View {
         VStack(spacing: 0) {
 
             SearchBar(
-                text: $searchText,
+                text: $viewModel.searchText,
                 isFocused: $isSearchFocused
             )
             
-            if displayedStations.isEmpty {
+            if viewModel.displayedStations.isEmpty {
                 
                 VStack {
                     Spacer()
@@ -46,9 +39,9 @@ struct StationSelectionView: View {
                 
             } else {
                 List {
-                    ForEach(Array(displayedStations.enumerated()), id: \.offset) { index, station in
+                    ForEach(Array(viewModel.displayedStations.enumerated()), id: \.offset) { index, station in
                         Button {
-                            onComplete(selectedSettlement, station)
+                            onComplete(viewModel.selectedSettlement, station)
                             
                         } label: {
                             StationRow(station: station)
@@ -66,8 +59,8 @@ struct StationSelectionView: View {
         .navigationTitle(navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            print("Загружен город: \(selectedSettlement.title ?? "N/A")")
-            print("Станций: \(allStations.count)")
+            print("Загружен город: \(viewModel.selectedSettlement.title ?? "N/A")")
+            print("Станций: \(viewModel.allStations.count)")
         }
     }
     

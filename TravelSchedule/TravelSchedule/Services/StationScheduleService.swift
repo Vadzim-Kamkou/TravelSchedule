@@ -11,7 +11,7 @@ protocol StationScheduleServiceProtocol {
   ) async throws -> StationSchedule
 }
 
-final class StationScheduleService: StationScheduleServiceProtocol {
+actor StationScheduleService: StationScheduleServiceProtocol {
   private let client: Client
   private let apikey: String
   
@@ -40,7 +40,7 @@ final class StationScheduleService: StationScheduleServiceProtocol {
         system: nil,
         result_timezone: nil
     ))
-    return try response.ok.body.json
+    return try await response.ok.body.json
   }
 }
 

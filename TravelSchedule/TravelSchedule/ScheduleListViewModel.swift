@@ -11,9 +11,11 @@ class ScheduleListViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var filterSettings = FilterSettings()
     
+    private let scheduleService: ScheduleBetweenStationsService
+    private let carrierService: CarrierInfoService
     
-    private let client: Client
-    private let apiKey: String
+//    private let client: Client
+//    private let apiKey: String
     
     var segments: [ScheduleSegmentDisplay] {
         filteredSegments
@@ -21,13 +23,22 @@ class ScheduleListViewModel: ObservableObject {
     
     init() {
         do {
-            self.client = Client(
+            let client = Client(
                 serverURL: try Servers.Server1.url(),
                 transport: URLSessionTransport()
             )
-            self.apiKey = APIConfiguration.apiKey
+            let apiKey = APIConfiguration.apiKey
+            
+            self.scheduleService = ScheduleBetweenStationsService(
+                client: client,
+                apikey: apiKey
+            )
+            self.carrierService = CarrierInfoService(
+                client: client,
+                apikey: apiKey
+            )
         } catch {
-            fatalError("Failed to initialize client: \(error)")
+            fatalError("Failed to initialize services: \(error)")
         }
     }
     
@@ -47,11 +58,6 @@ class ScheduleListViewModel: ObservableObject {
         filteredSegments = []
         
         do {
-            let scheduleService = ScheduleBetweenStationsService(
-                client: client,
-                apikey: apiKey
-            )
-            
             let schedule = try await scheduleService.getScheduleBetweenStations(
                 from: fromCode,
                 to: toCode,
@@ -60,41 +66,46 @@ class ScheduleListViewModel: ObservableObject {
                 limit: 10
             )
             
-            
             guard let fetchedSegments = schedule.segments else {
                 errorMessage = "Нет доступных рейсов"
                 isLoading = false
                 return
             }
             
-            var displaySegments: [ScheduleSegmentDisplay] = []
-            
-            for segment in fetchedSegments.prefix(10) {
-                var carrierLogoURL: String?
-                
-                if let carrierCode = segment.thread?.carrier?.code {
-                    do {
-                        let carrierService = CarrierInfoService(
-                            client: client,
-                            apikey: apiKey
-                        )
+            let displaySegments = await withTaskGroup(
+                of: ScheduleSegmentDisplay?.self,
+                returning: [ScheduleSegmentDisplay].self
+            ) { group in
+                for segment in fetchedSegments.prefix(10) {
+                    group.addTask {
+                        var carrierLogoURL: String?
                         
-                        let carrierInfo = try await carrierService.getCarrierInfo(
-                            code: String(carrierCode),
-                            system: "yandex"
-                        )
+                        if let carrierCode = segment.thread?.carrier?.code {
+                            do {
+                                let carrierInfo = try await self.carrierService.getCarrierInfo(
+                                    code: String(carrierCode),
+                                    system: "yandex"
+                                )
+                                carrierLogoURL = carrierInfo.carriers?.first?.logo
+                            } catch {
+                                print("Error loading carrier info: \(error)")
+                            }
+                        }
                         
-                        carrierLogoURL = carrierInfo.carriers?.first?.logo
-                    } catch {
-                        print("Error loading carrier info: \(error)")
+                        return await ScheduleSegmentDisplay(
+                            segment: segment,
+                            carrierLogoURL: carrierLogoURL
+                        )
                     }
                 }
                 
-                let displaySegment = ScheduleSegmentDisplay(
-                    segment: segment,
-                    carrierLogoURL: carrierLogoURL
-                )
-                displaySegments.append(displaySegment)
+                var results: [ScheduleSegmentDisplay] = []
+                for await result in group {
+                    if let segment = result {
+                        results.append(segment)
+                    }
+                }
+                return results
             }
             
             allSegments = displaySegments

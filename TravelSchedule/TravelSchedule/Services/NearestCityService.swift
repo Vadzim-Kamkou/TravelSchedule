@@ -10,7 +10,7 @@ protocol NearestCityServiceProtocol {
   ) async throws -> NearestCity
 }
 
-final class NearestCityService: NearestCityServiceProtocol {
+actor NearestCityService: NearestCityServiceProtocol {
   private let client: Client
   private let apikey: String
   
@@ -33,7 +33,7 @@ final class NearestCityService: NearestCityServiceProtocol {
         lang: "ru_RU",
         format: nil
     ))
-    return try response.ok.body.json
+    return try await response.ok.body.json
   }
 }
 

@@ -6,15 +6,15 @@ protocol AllStationsServiceProtocol {
   func getAllStations() async throws -> AllStations
 }
 
-final class AllStationsService: AllStationsServiceProtocol {
-  private let client: Client
-  private let apikey: String
-  
-  init(client: Client, apikey: String) {
-    self.client = client
-    self.apikey = apikey
-  }
-  
+actor AllStationsService: AllStationsServiceProtocol {
+    private let client: Client
+    private let apikey: String
+    
+    init(client: Client, apikey: String) {
+        self.client = client
+        self.apikey = apikey
+    }
+    
     func getAllStations() async throws -> AllStations {
         let response = try await client.getAllStations(query: .init(
             apikey: apikey,
@@ -23,12 +23,16 @@ final class AllStationsService: AllStationsServiceProtocol {
         ))
         
         var fullData = Data()
-        for try await chunk in try response.ok.body.html {
+        for try await chunk in try await response.ok.body.html {
             fullData.append(contentsOf: chunk)
         }
         
-        let allStations = try JSONDecoder().decode(AllStations.self, from: fullData)
-        return allStations
+        return try await Self.decodeOnMainActor(fullData)
+    }
+    
+    @MainActor
+    private static func decodeOnMainActor(_ data: Data) throws -> AllStations {
+        return try JSONDecoder().decode(AllStations.self, from: data)
     }
 }
 

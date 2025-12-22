@@ -11,7 +11,7 @@ protocol ScheduleBetweenStationsServiceProtocol {
   ) async throws -> ScheduleSegments
 }
 
-final class ScheduleBetweenStationsService: ScheduleBetweenStationsServiceProtocol {
+actor ScheduleBetweenStationsService: ScheduleBetweenStationsServiceProtocol {
   private let client: Client
   private let apikey: String
   
@@ -41,7 +41,7 @@ final class ScheduleBetweenStationsService: ScheduleBetweenStationsServiceProtoc
         result_timezone: nil,
         transfers: nil
     ))
-    return try response.ok.body.json
+    return try await response.ok.body.json
   }
 }
 

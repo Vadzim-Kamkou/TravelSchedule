@@ -1,5 +1,6 @@
 import SwiftUI
 import OpenAPIURLSession
+import Combine
 
 // MARK: - Selection Mode
 enum SelectionMode {
@@ -16,60 +17,25 @@ enum SelectionMode {
 
 // MARK: - City Selection View
 struct CitySelectionView: View {
+    
+    @StateObject private var viewModel: CitySelectionViewModel
     let mode: SelectionMode
-    
-    @Binding var allStationsData: AllStations?
-    
     let onComplete: (Settlement, Station) -> Void
     
-    @State private var searchText: String = ""
-    @State private var allSettlements: [Settlement] = []
-    @State private var isLoading = false
-    @State private var errorMessage: String?
-    @State private var errorType: NetworkErrorType? = nil
-    
     @FocusState private var isSearchFocused: Bool
-    
     @Environment(\.dismiss) private var dismiss
     
-    private let predefinedCityNames: [String] = [
-        "Минск",
-        "Могилёв",
-        "Москва",
-        "Санкт-Петербург",
-        "Екатеринбург",
-        "Новосибирск",
-        "Казань"
-    ]
-    
-    private var predefinedSettlements: [Settlement] {
-        predefinedCityNames.compactMap { cityName in
-            allSettlements.first { settlement in
-                settlement.title == cityName
-            }
-        }
-    }
-    
-    private var displayedSettlements: [Settlement] {
-        if searchText.isEmpty {
-            return predefinedSettlements
-        } else {
-            return allSettlements
-                .filter { settlement in
-                    guard let title = settlement.title else { return false }
-                    return title.lowercased().hasPrefix(searchText.lowercased())
-                }
-                .sorted { settlement1, settlement2 in
-                    (settlement1.title ?? "") < (settlement2.title ?? "")
-                }
-        }
+    init(mode: SelectionMode, allStationsData: Binding<AllStations?>, onComplete: @escaping (Settlement, Station) -> Void) {
+        self.mode = mode
+        self.onComplete = onComplete
+        _viewModel = StateObject(wrappedValue: CitySelectionViewModel(allStationsData: allStationsData))
     }
     
     var body: some View {
         Group {
-            if isLoading {
+            if viewModel.isLoading {
                 loadingView
-            } else if let error = errorMessage, let type = errorType {
+            } else if let error = viewModel.errorMessage, let type = viewModel.errorType {
                 errorView(type: type, message: error)
             } else {
                 contentView
@@ -78,12 +44,8 @@ struct CitySelectionView: View {
         .background(Color.appWhite)
         .navigationTitle(mode.title)
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            if allStationsData != nil {
-                prepareSettlements()
-            } else {
-                loadAllStations()
-            }
+        .task {
+            await viewModel.loadDataIfNeeded()
         }
     }
     
@@ -123,9 +85,9 @@ struct CitySelectionView: View {
                 }
                 
                 Button("try_again") {
-                    errorMessage = nil
-                    errorType = nil
-                    loadAllStations()
+                    Task {
+                        await viewModel.loadAllStations()
+                    }
                 }
                 .buttonStyle(.borderedProminent)
                 .padding(.top, 8)
@@ -139,11 +101,11 @@ struct CitySelectionView: View {
     private var contentView: some View {
         VStack(spacing: 0) {
             SearchBar(
-                text: $searchText,
+                text: $viewModel.searchText,
                 isFocused: $isSearchFocused
             )
             
-            if displayedSettlements.isEmpty {
+            if viewModel.displayedSettlements.isEmpty {
                 VStack {
                     Spacer()
                     Text("city_not_found")
@@ -154,7 +116,7 @@ struct CitySelectionView: View {
                 }
             } else {
                 List {
-                    ForEach(displayedSettlements, id: \.codes?.yandex_code) { settlement in
+                    ForEach(viewModel.displayedSettlements, id: \.codes?.yandex_code) { settlement in
                         ZStack {
                             NavigationLink {
                                 StationSelectionView(
@@ -176,57 +138,6 @@ struct CitySelectionView: View {
                 .scrollDismissesKeyboard(.interactively)
             }
         }
-    }
-    
-    private func loadAllStations() {
-        isLoading = true
-        errorMessage = nil
-        
-        Task {
-            do {
-                let client = Client(
-                    serverURL: try Servers.Server1.url(),
-                    transport: URLSessionTransport()
-                )
-                
-                let service = AllStationsService(
-                    client: client,
-                    apikey: APIConfiguration.apiKey
-                )
-                
-                let stations = try await service.getAllStations()
-                
-                await MainActor.run {
-                    allStationsData = stations
-                    prepareSettlements()
-                    isLoading = false
-                }
-                
-            } catch {
-                await MainActor.run {
-                    isLoading = false
-                    errorType = determineErrorType(error)
-                    errorMessage = error.localizedDescription
-                }
-                print("Error loading stations: \(error)")
-            }
-        }
-    }
-    
-    private func prepareSettlements() {
-        guard let allStations = allStationsData else { return }
-        
-        var result: [Settlement] = []
-        
-        allStations.countries?.forEach { country in
-            country.regions?.forEach { region in
-                if let settlements = region.settlements {
-                    result.append(contentsOf: settlements)
-                }
-            }
-        }
-        
-        allSettlements = result
     }
 }
 

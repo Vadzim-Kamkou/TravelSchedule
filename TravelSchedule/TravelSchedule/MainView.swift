@@ -1,28 +1,31 @@
 import SwiftUI
 import OpenAPIURLSession
+import Combine
 
 struct MainView: View {
     
     @AppStorage("isDarkModeEnabled") private var isDarkModeEnabled = false
     
+    @StateObject private var viewModel = MainViewModel()
     
-    // MARK: - State Route
-    @State private var departureSettlement: Settlement?
-    @State private var departureStation: Station?
-    @State private var arrivalSettlement: Settlement?
-    @State private var arrivalStation: Station?
-    @State private var allStationsData: AllStations?
-    @State private var isLoadingStations = false
-    @State private var errorMessage: String?
     
-    // MARK: - Navigation State
-    @State private var showDepartureSelection = false
-    @State private var showArrivalSelection = false
-    @State private var showScheduleList = false
-    @State private var showNetworkError = false
-    @State private var showStories = false
-    @State private var selectedStoryIndex = 0
-    @State private var viewedStories: Set<Int> = []
+//    // MARK: - State Route
+//    viewModel.departureSettlement
+//    viewModel.departureStation
+//    viewModel.arrivalSettlement
+//    viewModel.arrivalStation
+//    viewModel.allStationsData
+//    viewModel.isLoadingStations = false
+//    viewModel.errorMessage
+//    
+//    // MARK: - Navigation State
+//    @State private var showDepartureSelection = false
+//    @State private var showArrivalSelection = false
+//    @State private var showScheduleList = false
+//    @State private var showNetworkError = false
+//    @State private var showStories = false
+//    @State private var selectedStoryIndex = 0
+//    @State private var viewedStories: Set<Int> = []
     
     private let stories = Story.allStories
     
@@ -43,10 +46,10 @@ struct MainView: View {
                                 ForEach(Array(stories.enumerated()), id: \.offset) { index, story in
                                     StoryCardView(
                                         story: story,
-                                        isViewed: viewedStories.contains(index)
+                                        isViewed: viewModel.viewedStories.contains(index)
                                     ) {
-                                        selectedStoryIndex = index
-                                        showStories = true
+                                        viewModel.selectedStoryIndex = index
+                                        viewModel.showStories = true
                                     }
                                 }
                             }
@@ -56,18 +59,18 @@ struct MainView: View {
                         .frame(height: 188)
                         
                         RouteSelectionPanel(
-                            departureSettlement: $departureSettlement,
-                            departureStation: $departureStation,
-                            arrivalSettlement: $arrivalSettlement,
-                            arrivalStation: $arrivalStation,
+                            departureSettlement: $viewModel.departureSettlement,
+                            departureStation: $viewModel.departureStation,
+                            arrivalSettlement: $viewModel.arrivalSettlement,
+                            arrivalStation: $viewModel.arrivalStation,
                             onDepartureFieldTap: {
-                                showDepartureSelection = true
+                                viewModel.showDepartureSelection = true
                             },
                             onArrivalFieldTap: {
-                                showArrivalSelection = true
+                                viewModel.showArrivalSelection = true
                             },
                             onSearchTap: {
-                                showScheduleList = true
+                                viewModel.showScheduleList = true
                             }
                         )
                         .padding(.top, 16)
@@ -105,47 +108,48 @@ struct MainView: View {
                     .padding(.bottom, 49),
                 alignment: .bottom
             )
-            .navigationDestination(isPresented: $showNetworkError) {
-                NetworkErrorView(errorMessage: errorMessage ?? "Неизвестная ошибка") {
-                    errorMessage = nil
-                    loadAllStationsIfNeeded()
+            .navigationDestination(isPresented: $viewModel.showNetworkError) {
+                NetworkErrorView(errorMessage: viewModel.errorMessage ?? "Неизвестная ошибка") {
+                    Task {
+                        await viewModel.loadAllStationsIfNeeded()
+                    }
                 }
             }
-            .navigationDestination(isPresented: $showDepartureSelection) {
+            .navigationDestination(isPresented: $viewModel.showDepartureSelection) {
                 CitySelectionView(
                     mode: .departure,
-                    allStationsData: $allStationsData,
+                    allStationsData: $viewModel.allStationsData,
                     onComplete: { settlement, station in
                         withAnimation(.easeInOut(duration: 0.3)) {
-                            departureSettlement = settlement
-                            departureStation = station
+                            viewModel.departureSettlement = settlement
+                            viewModel.departureStation = station
                         }
                         withAnimation(.easeInOut(duration: 0.3)) {
-                            showDepartureSelection = false
+                            viewModel.showDepartureSelection = false
                         }
                     }
                 )
             }
-            .navigationDestination(isPresented: $showArrivalSelection) {
+            .navigationDestination(isPresented: $viewModel.showArrivalSelection) {
                 CitySelectionView(
                     mode: .arrival,
-                    allStationsData: $allStationsData,
+                    allStationsData: $viewModel.allStationsData,
                     onComplete: { settlement, station in
                         withAnimation(.easeInOut(duration: 0.3)) {
-                            arrivalSettlement = settlement
-                            arrivalStation = station
+                            viewModel.arrivalSettlement = settlement
+                            viewModel.arrivalStation = station
                         }
                         withAnimation(.easeInOut(duration: 0.3)) {
-                            showArrivalSelection = false
+                            viewModel.showArrivalSelection = false
                         }
                     }
                 )
             }
-            .navigationDestination(isPresented: $showScheduleList) {
-                if let depSettlement = departureSettlement,
-                   let depStation = departureStation,
-                   let arrSettlement = arrivalSettlement,
-                   let arrStation = arrivalStation {
+            .navigationDestination(isPresented: $viewModel.showScheduleList) {
+                if let depSettlement = viewModel.departureSettlement,
+                   let depStation = viewModel.departureStation,
+                   let arrSettlement = viewModel.arrivalSettlement,
+                   let arrStation = viewModel.arrivalStation {
                     ScheduleListView(
                         departureSettlement: depSettlement,
                         departureStation: depStation,
@@ -159,18 +163,22 @@ struct MainView: View {
         }
         .tint(.appBlack)
         .preferredColorScheme(isDarkModeEnabled ? .dark : .light)
-        .fullScreenCover(isPresented: $showStories) {
+        .fullScreenCover(isPresented: $viewModel.showStories) {
             StoriesView(
-                initialStoryIndex: selectedStoryIndex,
-                viewedStories: $viewedStories,
+                initialStoryIndex: viewModel.selectedStoryIndex,
+                viewedStories: $viewModel.viewedStories,
             )
-            .interactiveDismissDisabled(true)
-            .onAppear {
-                setupNavigationBarAppearance()
-                loadAllStationsIfNeeded()
-            }
+        }
+        .task {
+            await viewModel.loadAllStationsIfNeeded()
+        }
+        
+        .interactiveDismissDisabled(true)
+        .onAppear {
+            setupNavigationBarAppearance()
         }
     }
+
     
     private func setupNavigationBarAppearance() {
         let appearance = UINavigationBarAppearance()
@@ -199,38 +207,38 @@ struct MainView: View {
         UINavigationBar.appearance().tintColor = UIColor(named: "appBlack")
     }
     
-    private func loadAllStationsIfNeeded() {
-        guard allStationsData == nil else { return }
-        
-        Task {
-            do {
-                let client = Client(
-                    serverURL: try Servers.Server1.url(),
-                    transport: URLSessionTransport()
-                )
-                
-                let service = AllStationsService(
-                    client: client,
-                    apikey: APIConfiguration.apiKey
-                )
-                
-                let stations = try await service.getAllStations()
-                
-                await MainActor.run {
-                    allStationsData = stations
-                    errorMessage = nil
-                    showNetworkError = false
-                }
-            } catch {
-                await MainActor.run {
-                    errorMessage = error.localizedDescription
-                    showNetworkError = true
-                    
-                }
-                print("Error loading stations: \(error)")
-            }
-        }
-    }
+//    private func loadAllStationsIfNeeded() {
+//        guard allStationsData == nil else { return }
+//        
+//        Task {
+//            do {
+//                let client = Client(
+//                    serverURL: try Servers.Server1.url(),
+//                    transport: URLSessionTransport()
+//                )
+//                
+//                let service = AllStationsService(
+//                    client: client,
+//                    apikey: APIConfiguration.apiKey
+//                )
+//                
+//                let stations = try await service.getAllStations()
+//                
+//                await MainActor.run {
+//                    allStationsData = stations
+//                    errorMessage = nil
+//                    showNetworkError = false
+//                }
+//            } catch {
+//                await MainActor.run {
+//                    errorMessage = error.localizedDescription
+//                    showNetworkError = true
+//                    
+//                }
+//                print("Error loading stations: \(error)")
+//            }
+//        }
+//    }
 }
 
 

@@ -1,19 +1,21 @@
 import SwiftUI
 import Combine
 
-@Observable
-final class SettingsViewModel {
-    var isDarkModeEnabled: Bool {
+@MainActor
+class SettingsViewModel: ObservableObject {
+    @Published var isDarkModeEnabled: Bool {
         didSet {
             UserDefaultsService.shared.setBool(isDarkModeEnabled, forKey: UserDefaultsService.Keys.isDarkModeEnabled)
         }
     }
     
-    var showUserAgreement: Bool = false
+    @Published var showUserAgreement: Bool = false
     private var cancellables = Set<AnyCancellable>()
+    
     var appVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
     }
+    
     var apiInfo: String {
         "Версия API Яндекс.Расписаний 3.0"
     }

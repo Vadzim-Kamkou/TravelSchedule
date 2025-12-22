@@ -6,7 +6,7 @@ protocol NearestStationsServiceProtocol {
   ) async throws -> NearestStations
 }
 
-final class NearestStationsService: NearestStationsServiceProtocol {
+actor NearestStationsService: NearestStationsServiceProtocol {
   private let client: Client
   private let apikey: String
   
@@ -23,7 +23,7 @@ final class NearestStationsService: NearestStationsServiceProtocol {
         lng: lng,
         distance: distance
     ))
-    return try response.ok.body.json
+    return try await response.ok.body.json
   }
 }
 

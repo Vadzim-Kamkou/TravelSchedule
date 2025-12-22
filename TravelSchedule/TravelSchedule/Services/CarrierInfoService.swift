@@ -9,7 +9,7 @@ protocol CarrierInfoServiceProtocol {
   ) async throws -> CarrierInfo
 }
 
-final class CarrierInfoService: CarrierInfoServiceProtocol {
+actor CarrierInfoService: CarrierInfoServiceProtocol {
   private let client: Client
   private let apikey: String
   
@@ -30,7 +30,7 @@ final class CarrierInfoService: CarrierInfoServiceProtocol {
         lang: "ru_RU",
         format: nil
     ))
-    return try response.ok.body.json
+    return try await response.ok.body.json
   }
 }
 

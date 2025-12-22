@@ -11,7 +11,7 @@ protocol RouteStationsServiceProtocol {
   ) async throws -> RouteStations
 }
 
-final class RouteStationsService: RouteStationsServiceProtocol {
+actor RouteStationsService: RouteStationsServiceProtocol {
   private let client: Client
   private let apikey: String
   
@@ -38,7 +38,7 @@ final class RouteStationsService: RouteStationsServiceProtocol {
         date: date,
         show_systems: showSystems
     ))
-    return try response.ok.body.json
+    return try await response.ok.body.json
   }
 }
 
